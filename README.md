@@ -203,7 +203,7 @@ is therefore an explicit model choice, not a gauge equivalence.
 Let $F$ be the unitary discrete Fourier transform and
 
 $$
-k_r=2\pi\thinspace \operatorname{fftfreq}(N,\Delta x).
+k_r=2\pi\thinspace \mathrm{fftfreq}(N,\Delta x).
 $$
 
 For the finite periodic kinetic Hamiltonian $H=p^2/(2m)$, the exact spectral
@@ -211,7 +211,7 @@ propagator is
 
 $$
 G(t)=F^\dagger
-\operatorname{diag}\negthinspace \left[
+\mathrm{diag}\negthinspace \left[
 \exp\negthinspace \left(-\frac{i\hbar k_r^2t}{2m}\right)
 \right]F.
 $$
@@ -346,7 +346,7 @@ The selected source column gives the screen probability
 $$
 \boxed{
 p_i(t)=q|u_i|^2+(1-q)|\ell_i|^2
-+2\sqrt{q(1-q)}\operatorname{Re}
++2\sqrt{q(1-q)}\mathrm{Re}
 \negthinspace \left[e^{i\phi}\overline{u_i}\ell_i\right].
 }
 $$
@@ -427,7 +427,7 @@ required marginal. Adding or removing target times preserves consistency.
 ### 6.2 Monotone-transport realizer
 
 For each initial $j$, draw one latent rank
-$Z\sim\operatorname{Uniform}(0,1)$ and set
+$Z\sim\mathrm{Uniform}(0,1)$ and set
 
 $$
 X_{t_r}=Q_{\mu_r^{(j)}}(Z),
@@ -470,7 +470,7 @@ Write their overlap as $\mu=\langle r_U|r_L\rangle$. Ignoring the record gives
 
 $$
 p_i=q|u_i|^2+(1-q)|\ell_i|^2
-+2\sqrt{q(1-q)}\operatorname{Re}
++2\sqrt{q(1-q)}\mathrm{Re}
 \negthinspace \left[e^{i\phi}\overline{u_i}\ell_i\mu\right].
 $$
 
@@ -585,7 +585,7 @@ is not the density at an arbitrary final time; it is the signed,
 time-integrated longitudinal current
 
 $$
-J_z(x,z_d,t)=\frac{\hbar}{m}\operatorname{Im}
+J_z(x,z_d,t)=\frac{\hbar}{m}\mathrm{Im}
 \negthinspace \left[\overline\psi\thinspace \partial_z\psi\right],
 \qquad
 F(x)=\int_0^T J_z(x,z_d,t)\thinspace dt.

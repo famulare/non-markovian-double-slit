@@ -43,6 +43,9 @@ def test_markdown_uses_github_math_delimiters() -> None:
             assert token not in text, (
                 f"{path} uses TeX {token}, which GFM consumes before MathJax"
             )
+        assert r"\operatorname{" not in text, (
+            f"{path} uses operatorname, which GitHub's MathJax policy rejects"
+        )
 
         lines = text.splitlines()
         in_code_fence = False
