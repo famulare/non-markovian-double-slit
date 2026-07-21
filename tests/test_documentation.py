@@ -46,6 +46,10 @@ def test_markdown_uses_github_math_delimiters() -> None:
         assert r"\operatorname{" not in text, (
             f"{path} uses operatorname, which GitHub's MathJax policy rejects"
         )
+        assert re.search(r"\\\\[^\n]", text) is None, (
+            f"{path} has a TeX row separator inside a Markdown line; "
+            "put the separator at the end of a source line so GFM preserves it"
+        )
 
         lines = text.splitlines()
         in_code_fence = False

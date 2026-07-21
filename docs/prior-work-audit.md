@@ -43,14 +43,21 @@ are algebraically sound. The remaining issue is physical interpretation, not
 algebra: the notes explicitly introduce the "forgetting" matrix as nonunitary,
 
 $$
-  \Theta_E=\begin{pmatrix}1&1\\0&0\end{pmatrix}.
+\Theta_E=
+\begin{pmatrix}
+1&1\\
+0&0
+\end{pmatrix}.
 $$
 
 It maps two orthogonal indicator configurations to the same vector. Therefore
 
 $$
-  \Theta_E^\dagger\Theta_E
-  =\begin{pmatrix}1&1\\1&1\end{pmatrix}\ne I,
+\Theta_E^\dagger\Theta_E
+=\begin{pmatrix}
+1&1\\
+1&1
+\end{pmatrix}\ne I,
 $$
 
 so it is not a unitary evolution of a closed two-state indicator. Its columns

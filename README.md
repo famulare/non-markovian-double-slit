@@ -45,6 +45,7 @@ free Hamiltonian from more primitive stochastic assumptions.
 10. [What the construction does not establish](#10-what-the-construction-does-not-establish)
 11. [Reproducing the results](#11-reproducing-the-results)
 12. [References](#12-references)
+13. [Assessment: equivalence class versus classical trajectory](#13-assessment-equivalence-class-versus-classical-trajectory)
 
 ## 1. The question
 
@@ -651,7 +652,10 @@ potential in the broader formalism. It is not unitary:
 
 $$
 \Theta_E^\dagger\Theta_E
-=\begin{pmatrix}1&1\\1&1\end{pmatrix}\ne I.
+=\begin{pmatrix}
+1&1\\
+1&1
+\end{pmatrix}\ne I.
 $$
 
 Read as a single Kraus operator, it is also not a trace-preserving local reset
@@ -785,3 +789,50 @@ or endorsed its scientific claims.
 Code is MIT licensed. Original prose and generated figures are CC BY 4.0.
 Third-party papers under `literature/` retain their own licenses; see
 [`THIRD_PARTY.md`](THIRD_PARTY.md).
+
+## 13. Assessment: equivalence class versus classical trajectory
+
+This assessment records a concern raised by Mike Famulare and developed in
+dialogue with GPT-5.6 Sol (OpenAI Codex).
+
+In [*The Stochastic-Quantum
+Correspondence*](https://arxiv.org/abs/2302.10778), Barandes explicitly defines
+an indivisible stochastic process as an equivalence class of non-Markovian
+realizers that agree on specified first-order conditional probabilities while
+possibly differing on higher-order conditionals and whole-trajectory
+probabilities. This is a reasonable response to the predictive content of
+standard quantum mechanics. Standard quantum mechanics assigns probabilities
+to recorded outcomes once a state, dynamics, and measurement operations are
+specified, but it does not assign an ordinary positive probability measure to
+an electron's unmeasured path through a double-slit apparatus. At that level,
+retaining the entire equivalence class rather than selecting a path law loses
+no path information that the standard formalism supplied.
+
+The qualification concerns the phrase *classically stochastic*. In the usual
+mathematical sense, a stochastic process is a family of random variables on a
+common probability space and therefore has consistent finite-dimensional
+joint distributions. Barandes's basic tuple deliberately specifies less: it
+has classical configurations and nonnegative first-order laws, but does not
+select a probability measure on whole histories. An equivalence class of such
+measures is a well-defined object, but it is not one fully specified classical
+stochastic process.
+
+This distinction is harmless if whole trajectories are representational
+surplus and only the equivalence class has physical meaning. It is more
+consequential when [the formulation](https://arxiv.org/abs/2507.21192) is
+described as a system moving along a physical trajectory in configuration
+space. That language suggests an actual-trajectory ontology: each run has a
+history, and the stochastic dynamics should say how histories are distributed.
+The first-order tuple does not provide that distribution. The two realizers in
+this repository make the gap visible because they agree on every law used for
+the screen predictions while disagreeing sharply about the paths.
+
+None of this challenges the stochastic-quantum correspondence as a
+positive-probability representation of quantum predictions. The
+correspondence does not by itself select a unique classical microdynamics. To
+complete the stronger actual-trajectory reading, the framework would need
+either a principle that selects a realizer, an argument that all
+realizer-dependent claims are gauge and hence nonphysical, or a weaker
+statement of the ontology. Until one of those routes is taken, *first-order
+positive stochastic law* is less liable to overpromise than *complete
+classical stochastic process*.
