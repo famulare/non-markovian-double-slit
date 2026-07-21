@@ -10,6 +10,19 @@ downloads; the arXiv record is the source of truth for revisions and licensing.
 | `barandes_2023_the_stochastic_quantum_theorem_2309.03085.pdf` | Jacob A. Barandes, *The Stochastic-Quantum Theorem* | v2 | [arXiv:2309.03085](https://arxiv.org/abs/2309.03085) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | `barandes_2023_the_stochastic_quantum_correspondence_2302.10778.pdf` | Jacob A. Barandes, *The Stochastic-Quantum Correspondence* | v3 | [arXiv:2302.10778](https://arxiv.org/abs/2302.10778) | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | `bauer_2013_on_time_and_space_double_slit_experiments_1304.1767.pdf` | M. Bauer, *On time and space double-slit experiments* | v3 | [arXiv:1304.1767](https://arxiv.org/abs/1304.1767) | [arXiv non-exclusive distribution license](http://arxiv.org/licenses/nonexclusive-distrib/1.0/) |
+| `leblond_2025_electron_double_slit_isp_2511.02863.pdf` | David LeBlond, *The electron double-slit experiment from an ISP perspective* | v1 | [arXiv:2511.02863](https://arxiv.org/abs/2511.02863) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 
 These papers are collected as research inputs for the double-slit exploration;
 their claims are not conclusions of this repository.
+
+## Linked source not redistributed
+
+Jacob Barandes, *Double-Slit Interference for a Unistochastic Process*, Lecture
+Notes #22, is the direct two-configuration predecessor to this project. It is
+[available from the author's site](https://shared.jacobbarandes.com/documents/double-slit-interference-unistochastic-lecture-notes).
+The notes state that they are all rights reserved, so this repository links to
+them rather than redistributing a copy.
+
+## Checksums
+
+SHA-256 checksums of the archived PDFs are in `SHA256SUMS`.

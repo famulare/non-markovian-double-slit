@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software or derivation, please cite this repository."
+title: "Non-Markovian Double Slit"
+type: software
+authors:
+  - family-names: Famulare
+    given-names: Mike
+version: 0.1.0
+date-released: 2026-07-21
+url: "https://github.com/famulare/non-markovian-double-slit"
+license: MIT

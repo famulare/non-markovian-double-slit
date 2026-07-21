@@ -1,0 +1,22 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Check locked environment
+        run: uv sync --frozen --dev
+      - name: Lint
+        run: uv run --frozen ruff check src tests scripts
+      - name: Test
+        run: uv run --frozen pytest -q

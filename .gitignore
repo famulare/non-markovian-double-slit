@@ -11,4 +11,8 @@ __pycache__/
 
 # Local project artifacts
 outputs/
-figures/generated/
+docs/figures/generated/
+
+# Coverage
+.coverage
+htmlcov/

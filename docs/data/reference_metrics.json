@@ -1,0 +1,48 @@
+{
+  "barandes_two_state": {
+    "direct": [
+      0.9999999999999996,
+      5.004680467665246e-34
+    ],
+    "divided": [
+      0.4999999999999998,
+      0.4999999999999998
+    ],
+    "interference_residual": [
+      0.4999999999999998,
+      -0.4999999999999998
+    ]
+  },
+  "finite": {
+    "size": 401,
+    "preparation_unitarity_error": 9.992007221626409e-16,
+    "evolution_unitarity_error": 1.5543122344752192e-15,
+    "gamma_stochastic_error": 1.5543122344752192e-15,
+    "direct_divided_total_variation": 0.699540734536223,
+    "max_abs_interference_residual": 0.020559899088464506
+  },
+  "which_path": {
+    "local_reset_vs_retained_max_error": 0.0,
+    "uncomputation_vs_coherent_max_error": 0.0,
+    "eraser_aggregate_vs_recorded_max_error": 6.938893903907228e-18
+  },
+  "path_realizers": {
+    "independent_expected_squared_step": 263.26178316237406,
+    "transport_expected_squared_step": 35.765800765367196
+  },
+  "lattice2d": {
+    "shape": [
+      400,
+      400
+    ],
+    "norm_error": 2.4802382370125997e-13,
+    "max_boundary_probability": 4.696242803382323e-06,
+    "net_detector_flux": 0.21155684729216048,
+    "backward_flux_fraction": 0.0,
+    "paraxial_expected_spacing": 2.6655937666822487,
+    "observed_spacing": 2.5,
+    "exact_finite_spacing": 2.3000000000000003,
+    "exact_2d_correlation": 0.9840729710126997,
+    "exact_2d_total_variation": 0.10476109858386493
+  }
+}
