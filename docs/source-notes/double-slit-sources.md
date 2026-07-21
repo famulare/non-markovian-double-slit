@@ -15,7 +15,7 @@ qualification developed in `docs/prior-work-audit.md`.
 ## LeBlond, arXiv:2511.02863v1
 
 David LeBlond extends the lecture-note argument to a physical electron example
-with 2,000 sampled positions and includes the complete R code. Parameters,
+with 2,000 sampled positions and includes its R implementation. Parameters,
 kernel equations, and listings are reproduced in
 `scripts/reproduce_leblond.py`. The source is CC0 and the PDF is archived in
 `literature/`.
@@ -32,8 +32,8 @@ Source: [arXiv:2511.02863](https://arxiv.org/abs/2511.02863).
 ## Bauer, arXiv:1304.1767v3
 
 M. Bauer's spatial point-slit initial condition and free evolution appear in
-Eqs. 5-9. The result exposes the relative phase and familiar fringe positions
-analytically. The delta-function slit state is intentionally schematic and not
+Eqs. 5-9. The solution gives the relative phase and familiar fringe positions
+analytically. The delta-function slit state is schematic and not
 normalized as a finite vector, so this project uses finite-width normalized box
 modes instead.
 

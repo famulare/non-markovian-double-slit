@@ -1,10 +1,10 @@
 # Prior-work audit
 
-This project is a replication and extension, not the first application of
-indivisible stochastic processes to a double slit. The source record was
-expanded after two direct predecessors were identified.
+Barandes's lecture notes and LeBlond's paper are direct predecessors to this
+project, which replicates and extends their double-slit applications of
+indivisible stochastic processes.
 
-## What the predecessors already establish
+## Prior results
 
 | Source | What it contributes | How this project uses it |
 | --- | --- | --- |
@@ -13,7 +13,7 @@ expanded after two direct predecessors were identified.
 | M. Bauer, [*On time and space double-slit experiments*](https://arxiv.org/abs/1304.1767) | A schematic analytic free-particle solution for point slits, relative phase, event buildup, and partial aperture weights. | Used as an analytic benchmark for the free phase and fringe shift. Its temporal-slit material is outside v1 scope. |
 | Barandes, [*The Stochastic-Quantum Correspondence*](https://arxiv.org/abs/2302.10778), Section 3.5 | The general identity between interference and failure of stochastic divisibility. | Supplies the general derivation, rather than attributing that identity to this repository. |
 
-## What this project adds
+## Extensions in this repository
 
 1. A normalized, finite cyclic configuration space and a **complete unitary
    matrix**, not only the propagated amplitude of one initial wavefunction.
@@ -22,26 +22,25 @@ expanded after two direct predecessors were identified.
    \((\mathcal C,\mathcal T,\mathcal T_0,\Gamma,p,\mathcal A)\) tuple, with
    missing intermediate conditional laws rejected rather than inferred.
 3. Quantitative direct-versus-divided residuals and invariants.
-4. Two complete positive path-space realizers with identical one-time laws,
+4. Two positive path-space realizers with identical one-time laws,
    making the nonuniqueness of trajectories executable.
 5. A physical distinction between retained records, local reset, coherent
    global uncomputation, and postselected quantum erasure.
 6. A finite real-barrier 2D calculation whose detector is time-integrated
    signed probability current, plus a quantitative transverse-law cross-check.
-7. A line-for-line numerical reproduction and correction of LeBlond's published
-   upper-slit indexing.
+7. A numerical reproduction and correction of LeBlond's published upper-slit
+   indexing.
 
 Importing the free propagator is **not** counted as a defect. It is a principled
 use of the Hilbert-space representation supplied by the stochastic-quantum
 correspondence. Deriving the Hamiltonian independently from more primitive
-stochastic assumptions would be a different and stronger research objective.
+stochastic assumptions would be a separate research objective.
 
 ## Audit of Barandes's Lecture Notes #22
 
 The two-configuration cross-term calculation and the persistent-record result
-are algebraically sound. The concern is narrower and concerns physical
-interpretation, not an unnoticed algebra error: the notes explicitly introduce
-the "forgetting" matrix as nonunitary,
+are algebraically sound. The remaining issue is physical interpretation, not
+algebra: the notes explicitly introduce the "forgetting" matrix as nonunitary,
 
 \[
   \Theta_E=\begin{pmatrix}1&1\\0&0\end{pmatrix}.
@@ -78,10 +77,9 @@ result requires either of two specifications:
 - measure/postselect the record in a complementary basis, producing conditional
   fringe and antifringe patterns whose aggregate remains incoherent.
 
-This is not an objection to the unistochastic framework. It is a distinction
-between a nonunitary many-to-one local map and a physically specified erasure
-protocol. The repository implements all four cases so the distinction is
-testable.
+This does not challenge the unistochastic framework. It distinguishes a
+nonunitary many-to-one local map from a physically specified erasure protocol.
+The repository implements all four cases so the distinction is testable.
 
 ## Audit of LeBlond arXiv:2511.02863v1
 
@@ -149,8 +147,8 @@ It is not a normalized coefficient in an ordinary finite Euclidean Hilbert
 space: a normalized cell coefficient would scale as
 \(\sqrt{\Delta_{\rm slit}/(2a)}\). Correspondingly, the sampled continuum kernel
 is not assembled and verified as an all-column finite unitary. The paper
-successfully computes one propagated continuum amplitude density; it does not
-by itself construct a complete finite \(\Gamma\) for all source configurations.
+computes one propagated continuum amplitude density; it does not by itself
+construct a complete finite \(\Gamma\) for all source configurations.
 
 ### 4. "Forgetting" needs a physical implementation
 
@@ -161,12 +159,3 @@ matrix is unitary. Read as a local reset of the qubit, it is not physical for
 the reason above. Read as shorthand for a global controlled uncomputation, its
 fringe-restoration result is valid. The repository uses the latter label rather
 than leaving the operation ambiguous.
-
-## Bottom line
-
-The prior sources contain the core idea and, in LeBlond, a substantial spatial
-calculation. The new contribution here is not a claim to have discovered the
-double-slit application. It is to make the finite stochastic law complete,
-separate construction from positive-probability realization, repair the
-which-path semantics, expose two trajectory realizers, and verify the result
-against a 2D finite-barrier simulation.

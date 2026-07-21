@@ -12,8 +12,7 @@ downloads; the arXiv record is the source of truth for revisions and licensing.
 | `bauer_2013_on_time_and_space_double_slit_experiments_1304.1767.pdf` | M. Bauer, *On time and space double-slit experiments* | v3 | [arXiv:1304.1767](https://arxiv.org/abs/1304.1767) | [arXiv non-exclusive distribution license](http://arxiv.org/licenses/nonexclusive-distrib/1.0/) |
 | `leblond_2025_electron_double_slit_isp_2511.02863.pdf` | David LeBlond, *The electron double-slit experiment from an ISP perspective* | v1 | [arXiv:2511.02863](https://arxiv.org/abs/2511.02863) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
 
-These papers are collected as research inputs for the double-slit exploration;
-their claims are not conclusions of this repository.
+These papers are research inputs; the repository does not adopt their claims.
 
 ## Linked source not redistributed
 

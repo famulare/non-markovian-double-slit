@@ -2,25 +2,25 @@
 
 ## What is being constructed
 
-The primary object in this project is a family of ordinary, nonnegative
-transition probabilities on a finite configuration space. A Hilbert-space
-calculation constructs that family; it is not subsequently treated as a hidden
-trajectory. This division of labor is intentional:
+This project constructs a family of ordinary, nonnegative transition
+probabilities on a finite configuration space. A Hilbert-space calculation
+constructs that family; it is not subsequently treated as a hidden trajectory.
+The code keeps the construction and stochastic layers separate:
 
 ```text
 kinetic Hamiltonian -> unitary U -> Gamma = |U|^2 -> positive laws -> events/paths
 ```
 
-This use of a Hamiltonian is not a concession outside Jacob Barandes's
-framework. The stochastic-quantum theorem says that every finite indivisible
+Using a Hamiltonian is part of Jacob Barandes's framework. The
+stochastic-quantum theorem says that every finite indivisible
 stochastic process can be represented as a subsystem of a unistochastic
 process, and the converse dictionary reads a unitary quantum model as a family
-of stochastic laws. The Hilbert-space representation is therefore the intended
-general-purpose dynamical machinery, rather than a competing ontology
+of stochastic laws. The Hilbert-space representation supplies the dynamics; it
+is not an additional ontology
 ([Barandes 2023a, Sections 3.5 and 4](https://arxiv.org/abs/2309.03085);
 [Barandes 2023b, Sections 3.4-3.5](https://arxiv.org/abs/2302.10778)).
 
-The exact construction below is finite and dimensionless. The continuum
+The exact finite construction is dimensionless. The continuum
 electron and two-dimensional calculations are supporting benchmarks, not the
 definition of the stochastic process.
 
@@ -95,7 +95,7 @@ and all standalone probabilities are
         =\Gamma_{i j_s}(t\leftarrow t_s).
 \]
 
-Finally, \(\mathcal A\) contains every assignment of a real magnitude
+The algebra \(\mathcal A\) contains every assignment of a real magnitude
 \(a_i(t)\) to each configuration and time, with
 
 \[
@@ -103,8 +103,8 @@ Finally, \(\mathcal A\) contains every assignment of a real magnitude
 \]
 
 Because \(\mathcal T_0\) is a singleton, composition between division events is
-vacuous. In particular, no law conditioned at the slit or detector is silently
-added to the tuple.
+vacuous. No law conditioned at the slit or detector is silently added to the
+tuple.
 
 ## 2. Constructing the unistochastic law
 
@@ -130,7 +130,7 @@ Thus \(q=1,0\) are the one-slit contexts, and \(q=1/2\) is a balanced
 double slit. Unlike unnormalized point-slit expressions, this vector has unit
 Euclidean norm on the finite configuration space.
 
-### A complete unitary preparation
+### Unitary preparation
 
 Let \(e_{j_s}\) be the source configuration vector, set
 \(v=e_{j_s}-\psi_{q,\phi}\), and, when \(v\neq0\), define
@@ -166,7 +166,7 @@ finite-dimensional propagator is
        \right]F.
 \]
 
-The complete source-to-target unitary and stochastic law are
+The source-to-target unitary and stochastic law are
 
 \[
   U(t\leftarrow t_s)=G(t)P,
@@ -182,9 +182,9 @@ Unitarity gives
   \sum_i\Gamma_{ij}=1
 \]
 
-for every column \(j\), not only for the selected source. This is a complete
-finite unistochastic transition matrix. No continuum quadrature is being
-mistaken for a finite unitary.
+for every column \(j\), not only for the selected source. This defines a finite
+unistochastic transition matrix. Unlike the continuum benchmark below, this
+construction supplies and verifies every column of a finite unitary.
 
 ## 3. Interference is the failure of stochastic composition
 
@@ -328,10 +328,10 @@ Fringes can return in two distinct physical constructions:
 
 ![Conditional quantum-eraser patterns](figures/quantum_eraser.png)
 
-## 6. Two complete positive path-space realizers
+## 6. Two positive path-space realizers
 
-The tuple fixes first-order laws but deliberately leaves higher-order and
-whole-trajectory probabilities unspecified. Barandes describes it as an
+The tuple fixes first-order laws but leaves higher-order and whole-trajectory
+probabilities unspecified. Barandes describes it as an
 equivalence class of non-Markovian realizers ([2023b, pp. 5-6](https://arxiv.org/abs/2302.10778);
 [2023a, pp. 11-12](https://arxiv.org/abs/2309.03085)). The following path laws
 are therefore additional constructions, not quantum predictions.
@@ -351,8 +351,8 @@ On \(\Omega=\mathcal C^{R+1}\), set
   =p_j(t_s)\prod_{r=1}^R\mu_r^{(j)}(i_r).
 \]
 
-This is normalized, nonnegative, and has exactly the required one-time
-marginals. The same product construction is projectively consistent when
+It is normalized and nonnegative, with the required one-time marginals. The
+same product construction is projectively consistent when
 target times are added or removed.
 
 ### Comonotone optimal transport
@@ -372,12 +372,12 @@ Markovian because the latent initial configuration and rank are not generally
 recoverable from an intermediate configuration.
 
 The transport cost uses the displayed linear coordinate rather than cyclic
-distance. That is an explicit extra convention; it is harmless only while the
-probability near the periodic boundary is negligible.
+distance. This extra convention is appropriate only while the probability near
+the periodic boundary is negligible.
 
-Both realizers reproduce every \(\Gamma\) column. They disagree about path
-roughness and individual histories, illustrating why a trajectory law cannot
-be read off from one-time marginals.
+Both realizers reproduce every \(\Gamma\) column. Their disagreement about path
+roughness and individual histories shows that one-time marginals do not
+determine a trajectory law.
 
 ![Two path-space realizers with the same marginals](figures/path_realizers.png)
 
@@ -399,11 +399,12 @@ separation \(d=6.15\times10^{-9}\,\mathrm m\). The paraxial fringe scale is
   \Delta x\simeq\frac{\lambda L}{d}=0.020\,\mathrm m.
 \]
 
-This is a useful physical-units check. It is not the finite stochastic tuple,
+This supplies a physical-units check. It is not the finite stochastic tuple,
 because sampled continuum kernel values on unequal grids are not by themselves
-a verified finite unitary matrix. The finite cyclic construction above supplies
-that missing distinction. Bauer's point-slit solution gives the corresponding
-analytic phase and fringe shift ([Bauer 2013, Eqs. 5-9](https://arxiv.org/abs/1304.1767)).
+a verified finite unitary matrix. The finite cyclic construction instead
+supplies an all-column unitary. Bauer's point-slit solution gives the
+corresponding analytic phase and fringe shift
+([Bauer 2013, Eqs. 5-9](https://arxiv.org/abs/1304.1767)).
 
 ## 8. Supporting two-dimensional simulation
 
@@ -443,9 +444,9 @@ For the reference profile, the normalized 2D current is compared with the
 finite transverse law at paraxial flight time \(t=L/v_z\). Their correlation is
 0.984 and total-variation distance is 0.105. The ideal paraxial center spacing
 is 2.666 dimensionless units; the resolved central spacings are 2.50 in the 2D
-run and 2.30 in the finite transverse calculation. The difference is consistent
-with finite slit width, finite barrier geometry, and grid resolution; the full
-shape comparison is the stronger check.
+run and 2.30 in the finite transverse calculation. Finite slit width, barrier
+geometry, and grid resolution may each contribute; the full-shape correlation
+is the more informative cross-check.
 
 ![Finite transverse law versus 2D integrated current](figures/exact_vs_2d.png)
 
@@ -465,8 +466,8 @@ diagnostics were:
 | detector backward-current fraction | 0 within floating precision |
 | finite-versus-2D correlation | 0.984 |
 
-These checks establish the stated finite model and numerical cross-check. They
-do **not** select a unique trajectory realizer, derive the free Hamiltonian from
+The checks cover the stated finite model and numerical cross-check. They do
+**not** select a unique trajectory realizer, derive the free Hamiltonian from
 more primitive stochastic assumptions, model a detailed electron gun or
 detector, establish that the lattice regularization is a continuum limit, or
 remove the stated unitary-completion choice for unused source columns.

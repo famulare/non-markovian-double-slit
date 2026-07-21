@@ -5,8 +5,8 @@ These are locator notes and paraphrases, not a substitute for the papers.
 ## The Stochastic-Quantum Theorem, arXiv:2309.03085v2
 
 - **Pages 8-12, Eqs. 24-42:** exact definition of the tuple
-  \((\mathcal C,\mathcal T,\mathcal T_0,\Gamma,p,\mathcal A)\). Important
-  semantic detail: \(\mathcal A\) is the maximal algebra of random variables
+  \((\mathcal C,\mathcal T,\mathcal T_0,\Gamma,p,\mathcal A)\). Here
+  \(\mathcal A\) is the maximal algebra of random variables
   \(A:\mathcal C\times\mathcal T\to\mathbb R\), not an event algebra.
 - **Pages 9-11, Eqs. 25-39:** \(\Gamma\) is defined only for conditioning
   times in the sparse set \(\mathcal T_0\), is column-stochastic, trivializes at
@@ -41,7 +41,7 @@ Source: [arXiv:2302.10778](https://arxiv.org/abs/2302.10778).
 
 This later synthesis develops the interpretation, measurement framework, and
 the role of Hilbert-space ingredients as representational tools. It supports the
-project's use of standard Hamiltonian methods to construct highly general
+project's use of standard Hamiltonian methods to construct general
 stochastic laws. It does not require an autonomous derivation of the free
 Hamiltonian from positive probabilities.
 
