@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software or derivation, please cite this repository."
+message: "If you use this software, please cite this repository; the README credits its AI-authored exposition separately."
 title: "Non-Markovian Double Slit"
 type: software
 authors:

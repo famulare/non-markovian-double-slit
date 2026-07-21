@@ -5,11 +5,11 @@ These are locator notes and paraphrases, not a substitute for the papers.
 ## The Stochastic-Quantum Theorem, arXiv:2309.03085v2
 
 - **Pages 8-12, Eqs. 24-42:** exact definition of the tuple
-  \((\mathcal C,\mathcal T,\mathcal T_0,\Gamma,p,\mathcal A)\). Here
-  \(\mathcal A\) is the maximal algebra of random variables
-  \(A:\mathcal C\times\mathcal T\to\mathbb R\), not an event algebra.
-- **Pages 9-11, Eqs. 25-39:** \(\Gamma\) is defined only for conditioning
-  times in the sparse set \(\mathcal T_0\), is column-stochastic, trivializes at
+  $(\mathcal C,\mathcal T,\mathcal T_0,\Gamma,p,\mathcal A)$. Here
+  $\mathcal A$ is the maximal algebra of random variables
+  $A:\mathcal C\times\mathcal T\to\mathbb R$, not an event algebra.
+- **Pages 9-11, Eqs. 25-39:** $\Gamma$ is defined only for conditioning
+  times in the sparse set $\mathcal T_0$, is column-stochastic, trivializes at
   conditioning times, and composes between division events. A generic target
   time need not supply another conditioning law.
 - **Pages 11-12:** higher-order conditional probabilities are not fixed. The
@@ -17,7 +17,7 @@ These are locator notes and paraphrases, not a substitute for the papers.
 - **Pages 17-19, Eq. 69:** every finite indivisible stochastic process can be
   regarded as a subsystem of a unistochastic process.
 - **Pages 26-28, Eqs. 105-110:** explicit dilation and conclusion; the dilated
-  Hilbert dimension is at most \(N^3\).
+  Hilbert dimension is at most $N^3$.
 
 Source: [arXiv:2309.03085](https://arxiv.org/abs/2309.03085).
 
@@ -27,7 +27,7 @@ Source: [arXiv:2309.03085](https://arxiv.org/abs/2309.03085).
 - **Pages 5-6, Eqs. 9-11:** the tower of higher-order conditionals and the
   decision to leave whole-trajectory probabilities unspecified.
 - **Pages 6-11, Eqs. 12-31:** stochastic-quantum dictionary, Kraus form,
-  dilation, and \(\Gamma_{ij}=|U_{ij}|^2\).
+  dilation, and $\Gamma_{ij}=|U_{ij}|^2$.
 - **Pages 12-14, Eqs. 33-43:** Hamiltonian/Schrodinger machinery and the
   interference residual generated when entrywise squared moduli fail to
   compose.
