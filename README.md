@@ -211,8 +211,8 @@ propagator is
 
 $$
 G(t)=F^\dagger
-\operatorname{diag}\!\left[
-\exp\!\left(-\frac{i\hbar k_r^2t}{2m}\right)
+\operatorname{diag}\negthinspace \left[
+\exp\negthinspace \left(-\frac{i\hbar k_r^2t}{2m}\right)
 \right]F.
 $$
 
@@ -244,9 +244,9 @@ The process tuple for the experiment is
 
 $$
 \begin{aligned}
-\mathcal C &= \{x_0,\ldots,x_{N-1}\},\\
-\mathcal T &= \{t_s\}\cup[0,\infty),\\
-\mathcal T_0 &= \{t_s\},\\
+\mathcal C &= \lbrace x_0,\ldots,x_{N-1}\rbrace ,\\
+\mathcal T &= \lbrace t_s\rbrace \cup[0,\infty),\\
+\mathcal T_0 &= \lbrace t_s\rbrace ,\\
 p_j(t_s) &= \delta_{j j_s},\\
 p_i(t) &= \Gamma_{i j_s}(t\leftarrow t_s),\\
 \mathbb E[A(t)] &= \sum_i a_i(t)p_i(t).
@@ -347,7 +347,7 @@ $$
 \boxed{
 p_i(t)=q|u_i|^2+(1-q)|\ell_i|^2
 +2\sqrt{q(1-q)}\operatorname{Re}
-\!\left[e^{i\phi}\overline{u_i}\ell_i\right].
+\negthinspace \left[e^{i\phi}\overline{u_i}\ell_i\right].
 }
 $$
 
@@ -471,7 +471,7 @@ Write their overlap as $\mu=\langle r_U|r_L\rangle$. Ignoring the record gives
 $$
 p_i=q|u_i|^2+(1-q)|\ell_i|^2
 +2\sqrt{q(1-q)}\operatorname{Re}
-\!\left[e^{i\phi}\overline{u_i}\ell_i\mu\right].
+\negthinspace \left[e^{i\phi}\overline{u_i}\ell_i\mu\right].
 $$
 
 - If no distinguishable record remains, $\mu=1$ and the full cross term
@@ -551,7 +551,7 @@ is
 
 $$
 K(x,t;x',0)=\sqrt{\frac{m}{2\pi i\hbar t}}
-\exp\!\left[\frac{im(x-x')^2}{2\hbar t}\right].
+\exp\negthinspace \left[\frac{im(x-x')^2}{2\hbar t}\right].
 $$
 
 The repository reproduces David LeBlond's midpoint quadrature using
@@ -586,7 +586,7 @@ time-integrated longitudinal current
 
 $$
 J_z(x,z_d,t)=\frac{\hbar}{m}\operatorname{Im}
-\!\left[\overline\psi\thinspace \partial_z\psi\right],
+\negthinspace \left[\overline\psi\thinspace \partial_z\psi\right],
 \qquad
 F(x)=\int_0^T J_z(x,z_d,t)\thinspace dt.
 $$

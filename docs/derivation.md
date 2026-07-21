@@ -57,7 +57,7 @@ Choose an odd integer $N$, interval length $L_x$, and cell spacing
 $\Delta x=L_x/N$. The configurations are
 
 $$
-  \mathcal C=\{x_n=(n-(N-1)/2)\Delta x:n=0,\ldots,N-1\}.
+  \mathcal C=\lbrace x_n=(n-(N-1)/2)\Delta x:n=0,\ldots,N-1\rbrace .
 $$
 
 The kinetic calculation uses periodic boundaries, so algebraically this is a
@@ -67,8 +67,8 @@ Use a source-stage label $t_s=-1$, slit time $0$, and arbitrary target
 flight times $t\geq0$:
 
 $$
-  \mathcal T=\{t_s\}\cup[0,\infty),\qquad
-  \mathcal T_0=\{t_s\}.
+  \mathcal T=\lbrace t_s\rbrace \cup[0,\infty),\qquad
+  \mathcal T_0=\lbrace t_s\rbrace .
 $$
 
 The label $-1$ is not one unit of free flight; it separates preparation from
@@ -161,8 +161,8 @@ finite-dimensional propagator is
 
 $$
   G(t)=F^\dagger
-       \operatorname{diag}\!\left[
-         \exp\!\left(-\frac{i\hbar k_r^2t}{2m}\right)
+       \operatorname{diag}\negthinspace \left[
+         \exp\negthinspace \left(-\frac{i\hbar k_r^2t}{2m}\right)
        \right]F.
 $$
 

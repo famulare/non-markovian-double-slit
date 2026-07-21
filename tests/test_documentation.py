@@ -39,6 +39,10 @@ def test_markdown_uses_github_math_delimiters() -> None:
         assert r"\)" not in text, f"{path} uses unsupported inline math delimiters"
         assert r"\[" not in text, f"{path} uses unsupported display math delimiters"
         assert r"\]" not in text, f"{path} uses unsupported display math delimiters"
+        for token in (r"\,", r"\!", r"\{", r"\}"):
+            assert token not in text, (
+                f"{path} uses TeX {token}, which GFM consumes before MathJax"
+            )
 
         lines = text.splitlines()
         in_code_fence = False
