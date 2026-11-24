@@ -10,27 +10,24 @@
 > Codex) revised the physics and numerical checks at his request. The work has
 > not been peer reviewed.
 
-## Abstract
+Put a thin phase plate over one opening. Set it to zero on one run and to
+$\pi$ on another. A position detector placed at the slits sees identical
+histograms. Leave the slit plane unmeasured and place the detector at the
+screen instead. The central bin now goes from bright to dark.
 
-Jacob Barandes's stochastic-quantum correspondence represents a finite quantum
-system as an indivisible stochastic process: a family of ordinary,
-nonnegative transition matrices that need not factor through arbitrary
-intermediate times. This note works out the double-slit experiment in that
-language. A finite Hilbert-space calculation first constructs a full
-unistochastic law,
-$\Gamma_{ij}(t\leftarrow t_s)=|U_{ij}(t\leftarrow t_s)|^2$. The implementation
-then crosses a strict boundary: marginals, event generation, and two explicit
-path-space realizers use real, nonnegative probabilities only. Interference is
-the difference between the direct law $|AB|^{\circ 2}$ and the artificially
-divided stochastic product $|A|^{\circ 2}|B|^{\circ 2}$. The same construction
-handles slit phase, one-slit contexts, event buildup, partial which-path
-records, coherent uncomputation, and conditional quantum erasure. A continuum
-electron calculation and a two-dimensional finite-barrier simulation provide
-numerical cross-checks. The model is complete as a finite stochastic-law
-construction, but it neither selects a unique trajectory law nor derives the
-free Hamiltonian from more primitive stochastic assumptions.
+![Two phase settings give coincident aperture histograms and distinct screen patterns](docs/figures/finite_contexts.png)
 
-![Finite transverse law versus two-dimensional integrated current](docs/figures/exact_vs_2d.png)
+*Figure 1. In the 401-cell model the central bin collects 2.21% of the electrons at
+phase zero. At phase $\pi$ the upper and lower contributions cancel there
+by reflection symmetry. Each panel shows the central part of its plane.*
+
+What would a simulator have to remember to predict that change? A rule
+that takes only a slit position as input, applied to the same distribution
+of slit positions, must produce the same screen distribution. The relative
+phase is physically accessible downstream even though it is absent from the
+position histogram at the aperture. Barandes's construction keeps the
+preparation in the transition law from the source to each target time.
+Once that law is known, an ordinary random draw suffices to generate a hit.
 
 ## Contents
 
@@ -39,55 +36,36 @@ free Hamiltonian from more primitive stochastic assumptions.
 3. [A finite double-slit law](#3-a-finite-double-slit-law)
 4. [Interference and stochastic division](#4-interference-and-stochastic-division)
 5. [A simulator in positive probability space](#5-a-simulator-in-positive-probability-space)
-6. [Two positive path-space realizers](#6-two-positive-path-space-realizers)
+6. [Two positive path-space realizers](#6-two-positive-path-space-realizers) and [what a hit on the right tells us](#63-a-hit-on-the-right)
 7. [Which-path records and erasure](#7-which-path-records-and-erasure)
 8. [Numerical and physical cross-checks](#8-numerical-and-physical-cross-checks)
 9. [Relation to prior work](#9-relation-to-prior-work)
 10. [What the construction does not establish](#10-what-the-construction-does-not-establish)
 11. [Reproducing the results](#11-reproducing-the-results)
 12. [References](#12-references)
-13. [Assessment: equivalence class versus classical trajectory](#13-assessment-equivalence-class-versus-classical-trajectory)
 
 ## 1. The question
 
-In the usual double-slit calculation, an amplitude reaches a screen point by
-two alternatives. If no physical record distinguishes the alternatives, the
-amplitudes add before their modulus is squared. If a retained record does
-distinguish them, their probabilities add instead. The difference is the
-interference term.
+One screen histogram is easy to explain stochastically. Give every possible
+slit position the same outgoing distribution equal to the observed histogram.
+This fits every bin, however fine the fringes. The test comes when the
+*same* outgoing rule must serve a second preparation.
 
-The question here is not whether that calculation can be repeated with
-different notation. It is whether the experiment can be represented in an
-ordinary stochastic process space with:
+The phase plate gives the simplest such test. At the slit plane, the two
+position distributions agree cell for cell. At the screen their total
+variation distance is 0.430. Total variation is the largest difference in
+probability that the preparations assign to any set of detector bins. If
+the phase settings are equally likely, a single screen hit lets an observer
+guess the setting correctly about 71.5% of the time. A single slit-plane
+position gives only a 50% chance. The two histograms at different planes
+come from separate ensembles. Placing both detectors in series would change
+the screen histogram.
 
-- a finite configuration set;
-- real, nonnegative transition probabilities;
-- normalized standalone probabilities at every target time;
-- an explicit account of why the laws are not Markov-divisible; and
-- positive measures on whole paths when a path measure is desired.
-
-The repository gives that representation. The standard
-Hamiltonian/Hilbert-space formalism constructs the stochastic law; simulation
-and realization after that boundary use positive probability space. This is not
-an evasion of Barandes's framework: his correspondence is intended to make
-Hilbert-space machinery a general method for constructing indivisible
-stochastic laws
-([Barandes, *The Stochastic-Quantum Correspondence*](https://arxiv.org/abs/2302.10778),
-Sections 3.4-3.5; [Barandes, *The Stochastic-Quantum
-Theorem*](https://arxiv.org/abs/2309.03085), Sections 3-4).
-
-The implementation keeps the two roles separate:
-
-| Layer | Mathematical objects | Role |
-| --- | --- | --- |
-| Law construction | Hamiltonian $H$, unitary $U$, complex amplitudes | Construct $\Gamma=\lvert U\rvert^{\circ 2}$ |
-| Stochastic process | $\Gamma$, $p$, real random variables | Store and validate positive laws |
-| Realization | categorical samples or a positive path measure | Generate events and histories |
-
-In this representation, the relevant non-Markovian structure is not a negative
-probability. It is the failure of the positive matrices obtained at different
-times to compose as though every intermediate time were a legitimate
-stochastic restart.
+Three questions follow. Can a position-only transition reproduce the
+family of laws? What does a slit detector physically record? Given a hit
+on the right, what can one infer about the slit the electron traversed?
+They have different answers even in this one finite model. Sections 4 and
+6 work them out.
 
 ## 2. Barandes's stochastic process
 
@@ -364,16 +342,60 @@ $$
 Closing one slit sets one branch weight to zero. Changing $\phi$ moves the
 fringes without changing normalization.
 
-![Slit contexts and relative phase](docs/figures/finite_contexts.png)
+An unread marker with two possible records leaves
+$q|u_i|^2+(1-q)|\ell_i|^2$ at the screen. Amplitudes from different cells
+of the *same* opening still add coherently. A marker with a separate record
+for each cell also removes those cross terms. With one slit closed, an opening label carries no information and leaves
+the single-slit diffraction pattern intact. A cell label can still change it.
 
-*Figure 1. Balanced two-slit pattern and the two half-weighted single-slit
-contributions. The second panel shifts the relative phase by $\pi$.*
+![No marker, an opening marker, and a cell marker give three screen profiles](docs/figures/indivisibility.png)
 
-![Direct and divided finite laws](docs/figures/indivisibility.png)
+*Figure 2. Same incoming state, same flight time. Recording the opening moves 0.215
+of the probability mass in total variation from the coherent pattern.
+Recording the cell moves 0.700 relative to the coherent pattern. The broad
+cell-resolved curve depends on the grid spacing and periodic box. It models
+localization to a single lattice cell.*
 
-*Figure 2. The direct positive law and the positive law obtained after an
-cell-resolving position measurement. The residual includes both inter-slit
-and intra-slit coherence.*
+### 4.3 Does any stochastic restart work?
+
+A residual can be large even when a stochastic factor exists. For example,
+rotate a two-component amplitude by $30^\circ$ twice. After the first
+rotation the probability column for input 1 is $(3/4,1/4)$, after the second
+it is $(1/4,3/4)$. The columns for input 2 are reversed throughout. Composing
+the two squared rotation matrices would give $(5/8,3/8)$ for input 1. Yet
+swapping the two positions takes **both** earlier columns exactly to their
+later values. The swap fits the matrices at this pair of times. A separate
+measurement protocol would be needed to identify it as an actual transition.
+
+For the spatial model we can rule out every such factor with one inequality.
+If $K$ is column-stochastic, moving probability according to $K$ cannot
+increase the distance between two distributions $a,b$. Indeed,
+
+$$
+d_{\rm TV}(Ka,Kb)
+=\frac12\sum_i\left|\sum_j K_{ij}(a_j-b_j)\right|
+\leq\frac12\sum_{ij}K_{ij}|a_j-b_j|
+=d_{\rm TV}(a,b).
+$$
+
+Hold the reference preparation matrix $P$ fixed. Feed it either the definite
+source $e_{j_s}$ or a classical uniform draw from the 20 source indices
+aligned with aperture cells. In the second case the random choice is made
+*before* applying $P$. Propagate both distributions using the columns of
+the same $\Gamma$.
+
+| Pair compared | Distance at the slits | Distance at the screen |
+| --- | ---: | ---: |
+| Two source distributions, one fixed $P$ | 0.050 | 0.735 |
+| One source, two phase settings | 0 | 0.430 |
+
+The first row violates the inequality. No column-stochastic matrix carries
+the full reference law from the slit plane to this screen time. This
+conclusion uses the specified unitary completion, since the second source
+samples columns beyond the one used in the beam. The second row asks whether one free-flight kernel can serve both phase settings.
+It depends only on the two prepared states and survives every choice of
+their unused columns. A simulator given the phase as an extra input can
+tell the settings apart. The obstruction concerns a restart on position alone.
 
 ## 5. A simulator in positive probability space
 
@@ -464,6 +486,55 @@ than a quantum prediction.
 
 *Figure 4. Two ordinary positive path ensembles with identical one-time
 marginals and different temporal roughness.*
+
+### 6.3 A hit on the right
+
+Take a hit on the right half of the unmarked screen, $R=(x>0)$. What is
+the probability that the electron was in the upper slit, $U$, at the aperture?
+The model supplies $P(U)=0.5$ and $P(R)=0.4889$. For any joint law with
+those marginals, the overlap of the two events obeys
+
+$$
+\max(0,P(U)+P(R)-1)\leq P(U\cap R)\leq\min(P(U),P(R)).
+$$
+
+The endpoints are attainable. There is enough upper-slit mass to supply
+every right-hand hit, and enough lower-slit mass to do the same. Within
+each event one can distribute the mass across cells in the required
+proportions. The allowed interval for $P(U\mid R)$ is therefore **the entire
+interval from zero to one**, even with exact histograms at both planes.
+The independent realizer gives 0.5. The monotone realizer sends the largest
+ranks to the largest positions at both planes and gives 1. Other one-time
+marginals can be appended by draws conditioned on the source, so observing
+more unmarked ensembles at intermediate times does not close this interval.
+
+Now install an ideal upper/lower marker. The record and screen hit can be
+read in the same run. The Born probabilities give
+$P(U,R)=q\sum_{i\in R}|u_i|^2$ and $P(R)$ is the right-hand mass of the
+recorded mixture. Their ratio is **0.790**. This number answers a laboratory
+question with two recorded outcomes. Using it for the unmarked run would
+require an additional assumption about how histories respond to the marker.
+
+<a id="13-assessment-equivalence-class-versus-classical-trajectory"></a>
+
+### 6.4 What it means to have a trajectory
+
+Mike Famulare raised a question about the phrase *classically stochastic*.
+For a classical path model, conditioning on a later hit is an ordinary
+question about the joint law. The interval above gives the exact extent
+to which that question stays open here. Indeed, for the definite source
+the independent realizer is itself a time-inhomogeneous Markov chain because each step draws
+afresh from the prescribed marginal. The no-restart result in
+Section 4 concerns a **shared** kernel for multiple preparations.
+
+Barandes explicitly allows a run to have one actual history while treating
+the choice of a full tower of conditional probabilities as contingent and
+possibly physically meaningless. An actual history in each run is compatible
+with a theory that leaves its distribution unspecified. The additional
+commitment comes when a proposed dynamics assigns odds to one unmeasured
+history versus another. In this example the disagreement runs from zero to
+certainty for the same hit. All the screen predictions survive it.
+[Barandes, *Quantum Systems as Indivisible Stochastic Processes*, v2, Section 2](https://arxiv.org/html/2507.21192v2#S2).
 
 ## 7. Which-path records and erasure
 
@@ -630,6 +701,8 @@ normalized 2D histogram by 0.0066 in total variation. The comparison tests
 the shape conditional on transmission, with no independent calibration of
 source brightness or detection efficiency.
 
+![Finite transverse law and 2D integrated current on common detector bins](docs/figures/exact_vs_2d.png)
+
 ![Finite barrier and integrated-current screen](docs/figures/lattice2d.png)
 
 *Figure 7. A finite wall, propagated density, and the normalized
@@ -653,7 +726,7 @@ framework.
 
 This repository adds a full finite unitary and all-column $\Gamma$, an explicit
 implementation of the entire process tuple, two positive path-space realizers,
-quantitative tests of cell-resolved division, a physical separation of local reset
+a total-variation test for a common stochastic restart, a physical separation of local reset
 from global uncomputation and conditional erasure, and a 2D signed-current
 cross-check.
 
@@ -811,50 +884,3 @@ or endorsed its scientific claims.
 Code is MIT licensed. Original prose and generated figures are CC BY 4.0.
 Third-party papers under `literature/` retain their own licenses; see
 [`THIRD_PARTY.md`](THIRD_PARTY.md).
-
-## 13. Assessment: equivalence class versus classical trajectory
-
-This assessment records a concern raised by Mike Famulare and developed in
-dialogue with GPT-5.6 Sol (OpenAI Codex).
-
-In [*The Stochastic-Quantum
-Correspondence*](https://arxiv.org/abs/2302.10778), Barandes explicitly defines
-an indivisible stochastic process as an equivalence class of non-Markovian
-realizers that agree on specified first-order conditional probabilities while
-possibly differing on higher-order conditionals and whole-trajectory
-probabilities. This is a reasonable response to the predictive content of
-standard quantum mechanics. Standard quantum mechanics assigns probabilities
-to recorded outcomes once a state, dynamics, and measurement operations are
-specified, but it does not assign an ordinary positive probability measure to
-an electron's unmeasured path through a double-slit apparatus. At that level,
-retaining the entire equivalence class rather than selecting a path law loses
-no path information that the standard formalism supplied.
-
-The qualification concerns the phrase *classically stochastic*. In the usual
-mathematical sense, a stochastic process is a family of random variables on a
-common probability space and therefore has consistent finite-dimensional
-joint distributions. Barandes's basic tuple deliberately specifies less: it
-has classical configurations and nonnegative first-order laws, but does not
-select a probability measure on whole histories. An equivalence class of such
-measures is a well-defined object, but it is not one fully specified classical
-stochastic process.
-
-This distinction is harmless if whole trajectories are representational
-surplus and only the equivalence class has physical meaning. It is more
-consequential when [the formulation](https://arxiv.org/abs/2507.21192v1) is
-described as a system moving along a physical trajectory in configuration
-space. That language suggests an actual-trajectory ontology: each run has a
-history, and the stochastic dynamics should say how histories are distributed.
-The first-order tuple does not provide that distribution. The two realizers in
-this repository make the gap visible because they agree on every law used for
-the screen predictions while disagreeing sharply about the paths.
-
-None of this challenges the stochastic-quantum correspondence as a
-positive-probability representation of quantum predictions. The
-correspondence does not by itself select a unique classical microdynamics. To
-complete the stronger actual-trajectory reading, the framework would need
-either a principle that selects a realizer, an argument that all
-realizer-dependent claims are gauge and hence nonphysical, or a weaker
-statement of the ontology. Until one of those routes is taken, *first-order
-positive stochastic law* is less liable to overpromise than *complete
-classical stochastic process*.

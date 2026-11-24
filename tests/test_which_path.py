@@ -86,3 +86,12 @@ def test_complex_marker_overlap_matches_joint_born_probabilities() -> None:
         (np.abs(joint) ** 2).sum(axis=1),
         atol=1e-15,
     )
+
+
+def test_recording_the_cell_still_matters_with_one_open_slit() -> None:
+    model = FiniteDoubleSlitModel.create(upper_weight=1)
+    upper, lower = model.slit_components(4)
+    slit_recorded = retained_record_pattern(upper, lower, upper_weight=1)
+    cell_recorded = model.divided_law(4, 0)[:, model.source_index]
+    np.testing.assert_allclose(slit_recorded, model.probability(4), atol=1e-15)
+    assert np.abs(slit_recorded - cell_recorded).sum() > 0.1

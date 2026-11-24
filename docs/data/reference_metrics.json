@@ -21,12 +21,28 @@
     "direct_divided_total_variation": 0.699540734536223,
     "max_abs_interference_residual": 0.020559899088464506
   },
+  "restart_tests": {
+    "phase_pair_slit_tv": 0.0,
+    "phase_pair_screen_tv": 0.4296586106412167,
+    "center_bin_phase_zero": 0.022145248555537525,
+    "center_bin_phase_pi": 1.2155439215083785e-33,
+    "fixed_model_slit_tv": 0.0500000000000001,
+    "fixed_model_screen_tv": 0.7346858464805788,
+    "coherent_vs_slit_record_tv": 0.21482930532060834,
+    "slit_vs_cell_record_tv": 0.6895512604528473
+  },
   "which_path": {
     "local_reset_vs_retained_max_error": 0.0,
     "uncomputation_vs_coherent_max_error": 0.0,
     "eraser_aggregate_vs_recorded_max_error": 6.938893903907228e-18
   },
   "path_realizers": {
+    "unmarked_right_screen_probability": 0.4889273757222309,
+    "upper_given_right_independent": 0.5000000000000001,
+    "upper_given_right_shared_rank": 1.0,
+    "upper_given_right_min": 0.0,
+    "upper_given_right_max": 1.0,
+    "upper_given_right_with_marker": 0.7897194296006161,
     "independent_expected_squared_step": 263.26178316237406,
     "transport_expected_squared_step": 35.76580076536739
   },

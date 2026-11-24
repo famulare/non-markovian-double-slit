@@ -187,7 +187,7 @@ for every column $j$, not only for the selected source. This defines a finite
 unistochastic transition matrix. Unlike the continuum benchmark below, this
 construction supplies and verifies every column of a finite unitary.
 
-## 3. Interference is the failure of stochastic composition
+## 3. Which stochastic composition does interference rule out?
 
 Suppose the unitary evolution factors at an intermediate target time:
 
@@ -241,7 +241,11 @@ the identity, giving $p=(1,0)$, whereas the divided stochastic product gives
 $(1/2,1/2)$. Both source columns agree at the halfway plane, yet the final
 identity matrix has distinct columns. No common stochastic factor exists.
 
-![Direct and divided finite laws](figures/indivisibility.png)
+A positive full-matrix factor would contract total variation for any pair
+of source distributions. The fixed-completion test in the [main exposition](../README.md#43-does-any-stochastic-restart-work)
+exhibits a pair whose distance grows from 0.050 to 0.735.
+
+![Screen laws for no marker, a slit marker, and a cell marker](figures/indivisibility.png)
 
 ## 4. The spatial double-slit pattern
 
@@ -264,7 +268,7 @@ $$
 The one-slit contexts set one branch weight to zero. Changing $\phi$ moves
 the interference fringes without changing normalization.
 
-![Slit contexts and relative phase](figures/finite_contexts.png)
+![Aperture and screen histograms at phases zero and pi](figures/finite_contexts.png)
 
 Individual detections require no amplitude dynamics after the law is built:
 sample a categorical random variable with probabilities

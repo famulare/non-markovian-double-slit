@@ -37,3 +37,17 @@ def test_two_realizers_share_marginals_but_not_path_roughness() -> None:
         paths = realizer.sample(30_000, rng=np.random.default_rng(seed))
         observed = empirical_marginals(paths, process.size)
         assert np.max(np.abs(observed - expected)) < 0.015
+
+
+def test_upper_given_right_can_span_the_full_unit_interval() -> None:
+    model = FiniteDoubleSlitModel.create(
+        size=51, length=51, slit_separation=8, slit_width=3
+    )
+    p, r = np.abs(model.slit_state) ** 2, model.probability(4)
+    upper, right = model.upper_mode != 0, model.grid > 0
+    monotone = monotone_transport_coupling(p, r)
+    reversed_rank = monotone_transport_coupling(p[::-1], r)[:, ::-1]
+    for joint, expected in ((monotone, 1), (reversed_rank, 0), (np.outer(r, p), 0.5)):
+        np.testing.assert_allclose(joint.sum(axis=0), p, atol=1e-14)
+        np.testing.assert_allclose(joint.sum(axis=1), r, atol=1e-14)
+        assert np.isclose(joint[np.ix_(right, upper)].sum() / r[right].sum(), expected)

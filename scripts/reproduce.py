@@ -32,6 +32,7 @@ from non_markovian_double_slit.process import stochastic_error
 from non_markovian_double_slit.realizers import (
     IndependentPathRealizer,
     TransportPathRealizer,
+    monotone_transport_coupling,
 )
 from non_markovian_double_slit.which_path import (
     coherent_uncomputation_pattern,
@@ -64,52 +65,39 @@ def finite_demonstrations(
     profile: str, output: Path
 ) -> tuple[FiniteDoubleSlitModel, dict[str, object]]:
     size = 201 if profile == "quick" else 401
-    model = FiniteDoubleSlitModel.create(
-        size=size,
-        length=80.0,
-        slit_separation=8.0,
-        slit_width=2.0,
-    )
+    geometry = dict(size=size, length=80.0, slit_separation=8.0, slit_width=2.0)
+    model = FiniteDoubleSlitModel.create(**geometry)
+    opposite_phase = FiniteDoubleSlitModel.create(**geometry, relative_phase=np.pi)
     elapsed = 4.0
     upper, lower = model.slit_components(elapsed)
     coherent = screen_pattern(upper, lower)
-    upper_only = np.abs(upper) ** 2
-    lower_only = np.abs(lower) ** 2
-    pi_shifted = screen_pattern(upper, lower, relative_phase=np.pi)
-
-    figure, axes = plt.subplots(1, 2, figsize=(11, 4))
-    axes[0].plot(model.grid, coherent, label="both slits")
-    axes[0].plot(model.grid, 0.5 * upper_only, "--", label="upper contribution")
-    axes[0].plot(model.grid, 0.5 * lower_only, "--", label="lower contribution")
-    axes[0].set(
-        title="Slit contexts",
-        xlabel="screen configuration x",
-        ylabel="probability",
-    )
-    axes[0].legend()
-    axes[1].plot(model.grid, coherent, label="phase 0")
-    axes[1].plot(model.grid, pi_shifted, label="phase pi")
-    axes[1].set(title="Relative phase moves the fringes", xlabel="x")
-    axes[1].legend()
+    pi_shifted = opposite_phase.probability(elapsed)
+    direct = model.probability(elapsed)
+    slit_mass = np.abs(model.slit_state) ** 2
+    opposite_slit_mass = np.abs(opposite_phase.slit_state) ** 2
+    figure, axes = plt.subplots(1, 2, figsize=(10, 3.4))
+    for ax, first, second, window, title in (
+        (axes[0], slit_mass, opposite_slit_mass, 8, "At the slits"),
+        (axes[1], direct, pi_shifted, 12, "After the same free flight"),
+    ):
+        ax.plot(model.grid, first, color="#155773", lw=2, label=r"$\phi=0$")
+        ax.plot(model.grid, second, "--", color="#b04427", label=r"$\phi=\pi$")
+        ax.set(title=title, xlabel="transverse position", xlim=(-window, window))
+        ax.legend(frameon=False)
+    axes[0].set_ylabel("probability per cell")
     _save(figure, output, "finite_contexts.png")
 
-    direct = model.probability(elapsed)
     divided = model.divided_law(elapsed, 0.0)[:, model.source_index]
-    residual = direct - divided
-    figure, axes = plt.subplots(2, 1, figsize=(9, 6), sharex=True)
-    axes[0].plot(model.grid, direct, label="direct Gamma(t <- source)")
-    axes[0].plot(model.grid, divided, label="position recorded to one cell")
-    axes[0].set(
-        ylabel="probability",
-        title="Recording the aperture cell destroys within-slit coherence too",
-    )
-    axes[0].legend()
-    axes[1].axhline(0, color="black", lw=0.7)
-    axes[1].plot(model.grid, residual, color="tab:red")
-    axes[1].set(xlabel="screen configuration x", ylabel="direct - divided")
-    _save(figure, output, "indivisibility.png")
-
     recorded = retained_record_pattern(upper, lower)
+    figure, axis = plt.subplots(figsize=(9, 3.8))
+    axis.plot(model.grid, direct, color="#155773", label="no marker")
+    axis.plot(model.grid, recorded, "--", color="#b04427", label="opening recorded")
+    axis.plot(model.grid, divided, ":", color="#30383a", lw=2, label="cell recorded")
+    axis.set(xlabel="transverse position", ylabel="probability per cell")
+    axis.legend(frameon=False)
+    _save(figure, output, "indivisibility.png")
+    residual = direct - divided
+
     local_reset = local_reset_pattern(upper, lower)
     uncomputed = coherent_uncomputation_pattern(upper, lower)
     partial = screen_pattern(upper, lower, record_overlap=0.5)
@@ -168,6 +156,21 @@ def finite_demonstrations(
     axes[0].set_ylabel("configuration x")
     _save(figure, output, "path_realizers.png")
 
+    # Two source distributions passed through the very same completed P.
+    # The second samples a source index uniformly from the aperture support.
+    aperture_indices = (model.upper_mode != 0) | (model.lower_mode != 0)
+    mixed_source = aperture_indices / aperture_indices.sum()
+    early_law = process.law(0.0)
+    late_law = process.law(elapsed)
+    right = model.grid > 0
+    upper_slit = model.upper_mode != 0
+    rank_joint = monotone_transport_coupling(slit_mass, direct)
+    upper_and_right = rank_joint[np.ix_(right, upper_slit)].sum()
+    other_and_right = rank_joint[np.ix_(right, ~upper_slit)].sum()
+    right_mass = direct[right].sum()
+    upper_mass = slit_mass[upper_slit].sum()
+    marked_joint = model.upper_weight * np.abs(upper[right]) ** 2
+
     metrics: dict[str, object] = {
         "barandes_two_state": _barandes_two_state(),
         "finite": {
@@ -177,6 +180,22 @@ def finite_demonstrations(
             "gamma_stochastic_error": stochastic_error(model.gamma(elapsed)),
             "direct_divided_total_variation": total_variation_distance(direct, divided),
             "max_abs_interference_residual": float(np.max(np.abs(residual))),
+        },
+        "restart_tests": {
+            "phase_pair_slit_tv": total_variation_distance(
+                slit_mass, opposite_slit_mass
+            ),
+            "phase_pair_screen_tv": total_variation_distance(direct, pi_shifted),
+            "center_bin_phase_zero": float(direct[size // 2]),
+            "center_bin_phase_pi": float(pi_shifted[size // 2]),
+            "fixed_model_slit_tv": total_variation_distance(
+                early_law[:, model.source_index], early_law @ mixed_source
+            ),
+            "fixed_model_screen_tv": total_variation_distance(
+                direct, late_law @ mixed_source
+            ),
+            "coherent_vs_slit_record_tv": total_variation_distance(direct, recorded),
+            "slit_vs_cell_record_tv": total_variation_distance(recorded, divided),
         },
         "which_path": {
             "local_reset_vs_retained_max_error": float(
@@ -190,6 +209,18 @@ def finite_demonstrations(
             ),
         },
         "path_realizers": {
+            "unmarked_right_screen_probability": float(right_mass),
+            "upper_given_right_independent": float(upper_mass),
+            "upper_given_right_shared_rank": float(
+                upper_and_right / (upper_and_right + other_and_right)
+            ),
+            "upper_given_right_min": float(
+                max(0, upper_mass + right_mass - 1) / right_mass
+            ),
+            "upper_given_right_max": float(min(upper_mass, right_mass) / right_mass),
+            "upper_given_right_with_marker": float(
+                marked_joint.sum() / recorded[right].sum()
+            ),
             "independent_expected_squared_step": independent.expected_squared_step(
                 model.grid
             ),
