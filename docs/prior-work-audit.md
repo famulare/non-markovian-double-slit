@@ -8,7 +8,7 @@ indivisible stochastic processes.
 
 | Source | What it contributes | How this project uses it |
 | --- | --- | --- |
-| Jacob Barandes, *Double-Slit Interference for a Unistochastic Process*, Lecture Notes #22 | An explicit two-configuration unistochastic double-slit calculation, including cross terms and idealized which-path records. | Cited as the direct toy-model predecessor; its two-state interference calculation is reproduced exactly. The notes are linked, not redistributed, because the reviewed copy is all rights reserved. |
+| Jacob Barandes, *Double-Slit Interference for a Unistochastic Process*, Lecture Notes #22 | An explicit two-configuration unistochastic double-slit calculation, including cross terms and idealized which-path records. | Cited as the direct toy-model predecessor; the Hadamard example here specializes its general two-state algebra. The notes are linked, not redistributed, because the reviewed copy is all rights reserved. |
 | David LeBlond, [*The electron double-slit experiment from an ISP perspective*](https://arxiv.org/abs/2511.02863) | A direct spatial extension to 2,000 sampled slit and screen positions, physical electron parameters, free-kernel quadrature, which-path cases, and complete R listings. | Reproduced in Python, audited below, and treated as the primary computational predecessor. |
 | M. Bauer, [*On time and space double-slit experiments*](https://arxiv.org/abs/1304.1767) | A schematic analytic free-particle solution for point slits, relative phase, event buildup, and partial aperture weights. | Used as an analytic benchmark for the free phase and fringe shift. Its temporal-slit material is outside v1 scope. |
 | Barandes, [*The Stochastic-Quantum Correspondence*](https://arxiv.org/abs/2302.10778), Section 3.5 | The general identity between interference and failure of stochastic divisibility. | Supplies the general derivation, rather than attributing that identity to this repository. |
@@ -86,7 +86,8 @@ result requires either of two specifications:
 
 This does not challenge the unistochastic framework. It distinguishes a
 nonunitary many-to-one local map from a physically specified erasure protocol.
-The repository implements all four cases so the distinction is testable.
+The repository evaluates the four screen laws. For the local reset it uses the
+reduced-state identity directly.
 
 ## Audit of LeBlond arXiv:2511.02863v1
 

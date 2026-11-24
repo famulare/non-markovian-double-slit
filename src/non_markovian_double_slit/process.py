@@ -19,6 +19,8 @@ StochasticMatrix = NDArray[np.float64]
 
 
 def _probability_vector(values: ArrayLike, size: int, name: str) -> ProbabilityVector:
+    if np.iscomplexobj(values):
+        raise ValueError(f"{name} must be real")
     vector = np.asarray(values, dtype=float).copy()
     if vector.shape != (size,):
         raise ValueError(f"{name} must have shape ({size},), got {vector.shape}")
@@ -26,14 +28,16 @@ def _probability_vector(values: ArrayLike, size: int, name: str) -> ProbabilityV
         raise ValueError(f"{name} contains non-finite values")
     if np.min(vector) < -1e-13:
         raise ValueError(f"{name} contains a negative probability")
-    vector[np.abs(vector) < 1e-15] = 0.0
-    if not np.isclose(vector.sum(), 1.0, atol=1e-11):
+    np.maximum(vector, 0.0, out=vector)
+    if not np.isclose(vector.sum(), 1.0, rtol=0, atol=1e-11):
         raise ValueError(f"{name} must sum to one; got {vector.sum():.16g}")
     vector.setflags(write=False)
     return vector
 
 
 def _stochastic_matrix(values: ArrayLike, size: int, name: str) -> StochasticMatrix:
+    if np.iscomplexobj(values):
+        raise ValueError(f"{name} must be real")
     matrix = np.asarray(values, dtype=float).copy()
     if matrix.shape != (size, size):
         raise ValueError(f"{name} must have shape ({size}, {size}), got {matrix.shape}")
@@ -41,8 +45,8 @@ def _stochastic_matrix(values: ArrayLike, size: int, name: str) -> StochasticMat
         raise ValueError(f"{name} contains non-finite values")
     if np.min(matrix) < -1e-13:
         raise ValueError(f"{name} contains a negative transition probability")
-    matrix[np.abs(matrix) < 1e-15] = 0.0
-    if not np.allclose(matrix.sum(axis=0), 1.0, atol=1e-11):
+    np.maximum(matrix, 0.0, out=matrix)
+    if not np.allclose(matrix.sum(axis=0), 1.0, rtol=0, atol=1e-11):
         raise ValueError(f"{name} is not column-stochastic")
     matrix.setflags(write=False)
     return matrix
@@ -99,7 +103,7 @@ class FiniteIndivisibleProcess:
             key = (conditioning, conditioning)
             if key not in checked:
                 raise ValueError(f"missing trivial law Gamma{key}")
-            if not np.allclose(checked[key], identity, atol=1e-11):
+            if not np.allclose(checked[key], identity, rtol=0, atol=1e-11):
                 raise ValueError(f"Gamma{key} must be the identity")
 
         expected_keys = {
@@ -117,7 +121,7 @@ class FiniteIndivisibleProcess:
                 for division in self.conditioning_times:
                     direct = checked[(target, first)]
                     divided = checked[(target, division)] @ checked[(division, first)]
-                    if not np.allclose(direct, divided, atol=1e-11):
+                    if not np.allclose(direct, divided, rtol=0, atol=1e-11):
                         raise ValueError(
                             "laws violate composition between conditioning times: "
                             f"Gamma({target} <- {first}) != "
@@ -203,6 +207,8 @@ class FiniteIndivisibleProcess:
         distribution: ArrayLike | None = None,
     ) -> float:
         """Expectation of a real random variable at one target time."""
+        if np.iscomplexobj(values):
+            raise ValueError("observable values must be real")
         magnitudes = np.asarray(values, dtype=float)
         if magnitudes.shape != (self.size,) or not np.all(np.isfinite(magnitudes)):
             raise ValueError(f"values must be a finite vector of shape ({self.size},)")

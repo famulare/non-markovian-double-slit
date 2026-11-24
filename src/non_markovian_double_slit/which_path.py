@@ -28,7 +28,7 @@ def screen_pattern(
         raise ValueError("upper and lower amplitudes must have the same shape")
     if not 0 <= upper_weight <= 1:
         raise ValueError("upper_weight must lie in [0, 1]")
-    if abs(record_overlap) > 1 + 1e-13:
+    if not abs(record_overlap) <= 1:
         raise ValueError("record overlap cannot exceed one in modulus")
     lower_weight = 1 - upper_weight
     mixture = upper_weight * np.abs(upper) ** 2 + lower_weight * np.abs(lower) ** 2
@@ -38,10 +38,9 @@ def screen_pattern(
         * np.real(np.exp(1j * relative_phase) * np.conj(upper) * lower * record_overlap)
     )
     pattern = mixture + cross
-    pattern[np.abs(pattern) < 1e-15] = 0.0
     if np.min(pattern) < -1e-12:
         raise RuntimeError("computed marginal is negative")
-    return pattern
+    return np.maximum(pattern, 0.0)
 
 
 def retained_record_pattern(
@@ -111,7 +110,9 @@ def quantum_eraser_patterns(
     upper_weight: float = 0.5,
     relative_phase: float = 0.0,
 ) -> EraserPatterns:
-    """Unnormalized joint patterns conditioned on the ``+/-`` record basis."""
+    """Joint probabilities of the screen bin and the +/- record outcome."""
+    if not 0 <= upper_weight <= 1:
+        raise ValueError("upper_weight must lie in [0, 1]")
     upper = np.asarray(upper_amplitude, dtype=complex)
     lower = np.asarray(lower_amplitude, dtype=complex)
     if upper.shape != lower.shape:
@@ -123,8 +124,14 @@ def quantum_eraser_patterns(
     return EraserPatterns(plus=plus, minus=minus)
 
 
-def path_distinguishability(record_overlap: complex) -> float:
-    """Pure-record distinguishability ``sqrt(1 - |overlap|^2)``."""
-    if abs(record_overlap) > 1 + 1e-13:
+def path_distinguishability(
+    record_overlap: complex, *, upper_weight: float = 0.5
+) -> float:
+    """Twice the optimal pure-record path-guessing probability minus one."""
+    if not 0 <= upper_weight <= 1:
+        raise ValueError("upper_weight must lie in [0, 1]")
+    if not abs(record_overlap) <= 1:
         raise ValueError("record overlap cannot exceed one in modulus")
-    return float(np.sqrt(max(0.0, 1 - abs(record_overlap) ** 2)))
+    return float(
+        np.sqrt(1 - 4 * upper_weight * (1 - upper_weight) * abs(record_overlap) ** 2)
+    )

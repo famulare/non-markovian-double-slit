@@ -20,6 +20,37 @@ def total_variation_distance(first: ArrayLike, second: ArrayLike) -> float:
     return 0.5 * l1_distance(first, second)
 
 
+def periodic_bin_masses(
+    centers: ArrayLike, masses: ArrayLike, detector_centers: ArrayLike
+) -> np.ndarray:
+    """Integrate uniform density within each input cell over new periodic bins.
+
+    Both grids have uniform spacing and span one period. A detector bin can
+    straddle the seam even when the two grids have different center offsets.
+    """
+    x = np.asarray(centers, dtype=float)
+    p = np.asarray(masses, dtype=float)
+    y = np.asarray(detector_centers, dtype=float)
+    if x.ndim != 1 or p.shape != x.shape or y.ndim != 1 or min(x.size, y.size) < 2:
+        raise ValueError("expected two grids and one mass per source bin")
+    dx, dy = x[1] - x[0], y[1] - y[0]
+    length = x.size * dx
+    if not (
+        dx > 0
+        and dy > 0
+        and np.allclose(np.diff(x), dx)
+        and np.allclose(np.diff(y), dy)
+        and np.isclose(length, y.size * dy)
+    ):
+        raise ValueError("grids must be uniform and have the same period")
+    # Extend the cumulative mass by one total per complete turn.
+    edges = np.r_[y - dy / 2, y[-1] + dy / 2] - (x[0] - dx / 2)
+    turns, offset = np.divmod(edges, length)
+    cumulative = np.r_[0.0, np.cumsum(p)]
+    values = np.interp(offset, np.arange(x.size + 1) * dx, cumulative)
+    return np.diff(values + turns * cumulative[-1])
+
+
 def central_fringe_spacing(
     positions: ArrayLike,
     intensity: ArrayLike,
@@ -37,8 +68,7 @@ def central_fringe_spacing(
     if not np.all(np.diff(x) > 0):
         raise ValueError("positions must be strictly increasing")
     if half_window is None:
-        # Use the innermost fringes: farther peaks acquire the expected
-        # nonparaxial angular-spacing correction.
+        # Restrict the estimate to peaks near the center of the envelope.
         half_window = 2 * expected_spacing
     mask = np.abs(x) <= half_window
     local_x = x[mask]

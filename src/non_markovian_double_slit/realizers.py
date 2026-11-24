@@ -8,7 +8,7 @@ from typing import Protocol
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
-from .process import FiniteIndivisibleProcess
+from .process import FiniteIndivisibleProcess, _probability_vector
 
 
 def monotone_transport_coupling(
@@ -20,38 +20,15 @@ def monotone_transport_coupling(
     one-dimensional support, the monotone coupling minimizes every convex
     function of displacement, including squared displacement.
     """
-    source_values = np.asarray(source, dtype=float)
-    target_values = np.asarray(target, dtype=float)
-    if source_values.shape != target_values.shape or source_values.ndim != 1:
-        raise ValueError("source and target must be vectors of equal length")
-    if (
-        np.min(source_values) < -1e-13
-        or np.min(target_values) < -1e-13
-        or not np.isclose(source_values.sum(), 1.0, atol=1e-11)
-        or not np.isclose(target_values.sum(), 1.0, atol=1e-11)
-    ):
-        raise ValueError("source and target must be probability vectors")
+    size = np.size(source)
+    source_values = _probability_vector(source, size, "source")
+    target_values = _probability_vector(target, size, "target")
 
-    coupling = np.zeros((source_values.size, source_values.size))
-    remaining_source = source_values.copy()
-    remaining_target = target_values.copy()
-    i = j = 0
-    tolerance = 1e-15
-    while i < source_values.size and j < source_values.size:
-        amount = min(remaining_source[j], remaining_target[i])
-        coupling[i, j] += amount
-        remaining_source[j] -= amount
-        remaining_target[i] -= amount
-        if remaining_source[j] <= tolerance:
-            j += 1
-        if remaining_target[i] <= tolerance:
-            i += 1
-    coupling[np.abs(coupling) < tolerance] = 0.0
-    if not np.allclose(coupling.sum(axis=0), source_values, atol=1e-12):
-        raise RuntimeError("transport coupling has incorrect source marginal")
-    if not np.allclose(coupling.sum(axis=1), target_values, atol=1e-12):
-        raise RuntimeError("transport coupling has incorrect target marginal")
-    return coupling
+    source_edges = np.r_[0.0, np.cumsum(source_values / source_values.sum())]
+    target_edges = np.r_[0.0, np.cumsum(target_values / target_values.sum())]
+    left = np.maximum(target_edges[:-1, None], source_edges[None, :-1])
+    right = np.minimum(target_edges[1:, None], source_edges[None, 1:])
+    return np.maximum(right - left, 0.0)
 
 
 class PathRealizer(Protocol):
@@ -75,6 +52,8 @@ class IndependentPathRealizer:
     target_times: tuple[float, ...]
 
     def __post_init__(self) -> None:
+        if len(set(self.target_times)) != len(self.target_times):
+            raise ValueError("target times must be distinct")
         for target in self.target_times:
             self.process.law(target)
 
@@ -121,6 +100,8 @@ class TransportPathRealizer:
     target_times: tuple[float, ...]
 
     def __post_init__(self) -> None:
+        if len(set(self.target_times)) != len(self.target_times):
+            raise ValueError("target times must be distinct")
         for target in self.target_times:
             self.process.law(target)
 

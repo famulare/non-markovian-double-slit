@@ -17,6 +17,7 @@ from matplotlib.lines import Line2D
 from non_markovian_double_slit.diagnostics import (
     central_fringe_spacing,
     normalized_correlation,
+    periodic_bin_masses,
     total_variation_distance,
 )
 from non_markovian_double_slit.finite import (
@@ -97,8 +98,11 @@ def finite_demonstrations(
     residual = direct - divided
     figure, axes = plt.subplots(2, 1, figsize=(9, 6), sharex=True)
     axes[0].plot(model.grid, direct, label="direct Gamma(t <- source)")
-    axes[0].plot(model.grid, divided, label="divided positive-kernel product")
-    axes[0].set(ylabel="probability", title="The inserted division changes the law")
+    axes[0].plot(model.grid, divided, label="position recorded to one cell")
+    axes[0].set(
+        ylabel="probability",
+        title="Recording the aperture cell destroys within-slit coherence too",
+    )
     axes[0].legend()
     axes[1].axhline(0, color="black", lw=0.7)
     axes[1].plot(model.grid, residual, color="tab:red")
@@ -263,16 +267,14 @@ def lattice_demonstration(profile: str, output: Path) -> dict[str, object]:
         length=config.x_extent,
         slit_separation=config.slit_separation,
         slit_width=config.slit_width,
+        mass=config.mass,
+        hbar=config.hbar,
     )
-    flight_time = config.detector_z / config.wave_number
-    exact = np.interp(
-        result.x,
-        transverse.grid,
-        transverse.probability(flight_time),
-        left=0.0,
-        right=0.0,
+    velocity_z = config.hbar * config.wave_number / config.mass
+    flight_time = config.detector_z / velocity_z
+    exact = periodic_bin_masses(
+        transverse.grid, transverse.probability(flight_time), result.x
     )
-    exact /= exact.sum()
     exact_spacing = central_fringe_spacing(
         result.x, exact, expected_spacing=expected_spacing
     )
@@ -294,6 +296,7 @@ def lattice_demonstration(profile: str, output: Path) -> dict[str, object]:
         "max_boundary_probability": result.max_boundary_probability,
         "net_detector_flux": flux.net_flux,
         "backward_flux_fraction": flux.backward_fraction,
+        "negative_integrated_bin_mass": flux.negative_bin_mass,
         "paraxial_expected_spacing": expected_spacing,
         "observed_spacing": observed_spacing,
         "exact_finite_spacing": exact_spacing,

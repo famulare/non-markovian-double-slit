@@ -48,18 +48,22 @@ def unitary_mapping(source: ArrayLike, target: ArrayLike) -> ComplexMatrix:
     b = np.asarray(target, dtype=complex)
     if a.ndim != 1 or b.shape != a.shape:
         raise ValueError("source and target must be vectors of the same shape")
-    if not np.isclose(np.vdot(a, a), 1.0, atol=1e-12):
+    if not np.isclose(np.vdot(a, a), 1.0, rtol=0, atol=1e-12):
         raise ValueError("source must be normalized")
-    if not np.isclose(np.vdot(b, b), 1.0, atol=1e-12):
+    if not np.isclose(np.vdot(b, b), 1.0, rtol=0, atol=1e-12):
         raise ValueError("target must be normalized")
+    identity = np.eye(a.size, dtype=complex)
+    if np.array_equal(a, b):
+        return identity
     difference = a - b
-    denominator = np.vdot(difference, a)
-    if abs(denominator) < 1e-14:
-        return np.eye(a.size, dtype=complex)
-    return (
-        np.eye(a.size, dtype=complex)
-        - np.outer(difference, difference.conj()) / denominator
-    )
+    if np.linalg.norm(difference) < 1e-3:
+        # Reflect a to -a first, then map -a to b with a well-scaled
+        # denominator. Near coincidence the one-reflection formula loses
+        # the O(||a-b||²) real part of its denominator to cancellation.
+        v = a + b
+        second = identity - np.outer(v, v.conj()) / np.vdot(v, a)
+        return second - 2 * np.outer(second @ a, a.conj())
+    return identity - np.outer(difference, difference.conj()) / np.vdot(difference, a)
 
 
 def free_propagator(
@@ -195,7 +199,7 @@ class FiniteDoubleSlitModel:
     def divided_law(
         self, target_elapsed: float, intermediate_elapsed: float
     ) -> NDArray[np.float64]:
-        """Counterfactual law produced by inserting a division event."""
+        """Law after recording the intermediate position to single-cell resolution."""
         if not 0 <= intermediate_elapsed <= target_elapsed:
             raise ValueError("require 0 <= intermediate <= target")
         later = np.abs(self.propagator(target_elapsed - intermediate_elapsed)) ** 2

@@ -1,12 +1,13 @@
 # The Double-Slit Experiment as an Indivisible Stochastic Process
 
-**Author:** GPT-5.6 Sol (OpenAI Codex)<br>
+**Original author:** GPT-5.6 Sol (OpenAI Codex)<br>
 **Accountable human question asker and project owner:** Mike Famulare
 
 > **Authorship and status.** GPT-5.6 Sol (OpenAI Codex) wrote this exposition
-> and implemented the repository in response to questions and scientific
+> and implemented the original repository in response to questions and scientific
 > direction from Mike Famulare. Mike is the accountable human maintainer, but
-> this repository does not present the prose as his authorship. The work has
+> this repository does not present the prose as his authorship. GPT-6 (OpenAI
+> Codex) revised the physics and numerical checks at his request. The work has
 > not been peer reviewed.
 
 ## Abstract
@@ -36,7 +37,7 @@ free Hamiltonian from more primitive stochastic assumptions.
 1. [The question](#1-the-question)
 2. [Barandes's stochastic process](#2-barandess-stochastic-process)
 3. [A finite double-slit law](#3-a-finite-double-slit-law)
-4. [Interference as indivisibility](#4-interference-as-indivisibility)
+4. [Interference and stochastic division](#4-interference-and-stochastic-division)
 5. [A simulator in positive probability space](#5-a-simulator-in-positive-probability-space)
 6. [Two positive path-space realizers](#6-two-positive-path-space-realizers)
 7. [Which-path records and erasure](#7-which-path-records-and-erasure)
@@ -137,7 +138,7 @@ constructs two such realizers explicitly.
 Barandes develops the broader causal-local and measurement interpretation in
 [*New Prospects for a Causally Local Formulation of Quantum
 Theory*](https://arxiv.org/abs/2402.16935) and [*Quantum Systems as Indivisible
-Stochastic Processes*](https://arxiv.org/abs/2507.21192).
+Stochastic Processes*](https://arxiv.org/abs/2507.21192v1).
 
 ## 3. A finite double-slit law
 
@@ -172,15 +173,14 @@ $$
 \qquad 0\le q\le 1.
 $$
 
-The cases $q=1$ and $q=0$ are one-slit contexts; $q=1/2$ is a balanced double
+The cases $q=1$ and $q=0$ condition on transmission through one open slit; $q=1/2$ is a balanced double
 slit. Unlike a point-slit delta function sampled on a grid, this finite vector
 has unit Euclidean norm.
 
 ### 3.2 A full unitary preparation
 
-Let $e_{j_s}$ denote one definite source configuration. A full unitary matrix
-$P$ must map that source to the slit state, not merely specify one output
-column. Set
+Let $e_{j_s}$ denote one definite source configuration. To model every initial configuration, choose a full unitary matrix
+$P$ whose source column equals the slit state. Set
 
 $$
 v=e_{j_s}-\psi_{q,\phi},
@@ -194,7 +194,8 @@ $d=v^\dagger e_{j_s}$. Normalization of the source and target gives
 $v^\dagger v=d+\overline d$; substituting this identity into $P^\dagger P$
 gives $P^\dagger P=I$.
 
-This Householder-like completion is not unique. Every allowed completion agrees
+For nearly coincident vectors the code uses two well-conditioned unitary maps
+through an intermediate vector with opposite sign. This completion is not unique. Every allowed completion agrees
 on the prepared source column, but different completions define different
 columns of $\Gamma$ for counterfactual initial configurations. The completion
 is therefore an explicit model choice, not a gauge equivalence.
@@ -258,7 +259,7 @@ The code materializes any requested finite subset of $\mathcal T$. Since
 $\mathcal T_0$ contains only $t_s$, it does not infer a new law conditioned at
 the slit or detector.
 
-## 4. Interference as indivisibility
+## 4. Interference and stochastic division
 
 Suppose a unitary evolution factors at an intermediate time:
 
@@ -304,10 +305,15 @@ $$
 =|G(t)|^{\circ2}|P|^{\circ2}.
 $$
 
-Both are nonnegative and column-stochastic. They represent different
-experimental conditions. The second inserts a division event at the slit and
-discards the cross terms; it is not a missing conditional law of the first
-process.
+The second matrix describes an ideal unread measurement of **which cell**
+the electron occupied at the slit plane. It removes coherence between every
+pair of distinct cells, including pairs inside the same opening. An ideal
+**which-slit** marker preserves coherence within each opening and gives the
+weighted sum of two single-slit diffraction patterns (Section 7).
+
+A nonzero residual rules out this particular restart kernel. To establish
+indivisibility at that time one must rule out *every* column-stochastic
+kernel that could carry the full earlier matrix to the later one.
 
 ### 4.1 The two-state example
 
@@ -329,8 +335,11 @@ $$
 |H_2|^{\circ2}|H_2|^{\circ2}e_1=(1/2,1/2).
 $$
 
-The residual is $(1/2,-1/2)$. No negative transition probability appears; the
-signed quantity is the difference between two positive experimental laws.
+The other input $e_2$ gives the same halfway distribution and ends at the
+opposite output. A single stochastic matrix acting on the same halfway input
+must return the same distribution both times. This rules out every restart
+kernel for the two-input experiment. For $e_1$ alone, a kernel with both
+columns equal to $(1,0)$ fits the final histogram exactly.
 
 ### 4.2 The spatial pattern
 
@@ -357,14 +366,14 @@ fringes without changing normalization.
 
 ![Slit contexts and relative phase](docs/figures/finite_contexts.png)
 
-*Figure 1. One-slit and two-slit contexts, with the fringe displacement caused
-by a relative phase.*
+*Figure 1. Balanced two-slit pattern and the two half-weighted single-slit
+contributions. The second panel shifts the relative phase by $\pi$.*
 
 ![Direct and divided finite laws](docs/figures/indivisibility.png)
 
 *Figure 2. The direct positive law and the positive law obtained after an
-inserted stochastic division. Their signed difference is the interference
-residual.*
+cell-resolving position measurement. The residual includes both inter-slit
+and intra-slit coherence.*
 
 ## 5. A simulator in positive probability space
 
@@ -446,7 +455,7 @@ Conditional on an initial configuration $j$, both realizers use the
 corresponding column of every requested $\Gamma$; the actual experiment assigns
 positive prior mass only to the prepared source $j_s$. The realizers do not
 agree about individual histories. In the reference run, the independent
-realizer's expected squared-step cost is $263.26$, while the transport
+realizer's expected **sum** of squared displacements is $263.26$, while the transport
 realizer's is $35.77$. The difference has no effect on any one-time screen law.
 It shows why the trajectory measure is an additional modeling choice rather
 than a quantum prediction.
@@ -475,12 +484,15 @@ p_i=q|u_i|^2+(1-q)|\ell_i|^2
 \negthinspace \left[e^{i\phi}\overline{u_i}\ell_i\mu\right].
 $$
 
-- If no distinguishable record remains, $\mu=1$ and the full cross term
-  survives.
+- Indistinguishable marker states give $|\mu|=1$. Their relative phase adds
+  to $\phi$.
 - If orthogonal records are retained, $\mu=0$ and the electron screen is the
   incoherent mixture.
-- Partial record overlap gives intermediate visibility. For pure record states,
-  $D=\sqrt{1-|\mu|^2}$.
+- For pure markers the optimal path-guessing success probability is
+  $(1+D)/2$, where $D=\sqrt{1-4q(1-q)|\mu|^2}$. Identical records leave
+  the prior odds available. At equal priors this reduces to
+  $D=\sqrt{1-|\mu|^2}$. At a given detector bin, the contrast under a scan
+  of $\phi$ also depends on the relative intensities arriving from each slit.
 
 A local unitary on the record preserves $\mu$, so it cannot restore the screen
 interference. A physical local reset channel cannot restore it either. In a
@@ -510,8 +522,9 @@ p_\pm(i)=\frac12\left|
 \right|^2.
 $$
 
-The normalized conditional distributions are a fringe and an antifringe,
-while their aggregate remains the recorded mixture:
+Each record outcome has probability $1/2$ because the propagated slit modes
+are orthogonal. The plotted conditional curves are $2p_+$ and $2p_-$. Their
+equal-weight average gives the recorded mixture,
 
 $$
 p_+(i)+p_-(i)=q|u_i|^2+(1-q)|\ell_i|^2.
@@ -524,8 +537,8 @@ global uncomputation restores the coherent law.*
 
 ![Conditional quantum-eraser patterns](docs/figures/quantum_eraser.png)
 
-*Figure 6. Conditional fringe and antifringe distributions sum to the
-unconditional which-path mixture.*
+*Figure 6. The two conditional curves average to the unconditional screen
+pattern. Each subset contains half of the detections in expectation.*
 
 ## 8. Numerical and physical cross-checks
 
@@ -539,11 +552,13 @@ checks are:
 | preparation unitarity error | $1.0\times10^{-15}$ |
 | evolution unitarity error | $1.6\times10^{-15}$ |
 | stochastic normalization/negativity error | $1.6\times10^{-15}$ |
-| direct-versus-divided total-variation distance | $0.700$ |
+| coherent versus cell-resolved total-variation distance | $0.700$ |
 | local-reset versus retained-record error | $0$ |
 | eraser aggregate versus recorded-mixture error | $6.9\times10^{-18}$ |
 
-These are finite numerical invariants, not fits to experimental data.
+The reset routine uses the retained-record formula, so its zero difference
+is an identity of the implementation. The eraser aggregate is computed from
+the two joint Born probabilities.
 
 ### 8.2 Continuum electron benchmark
 
@@ -592,21 +607,28 @@ J_z(x,z_d,t)=\frac{\hbar}{m}\mathrm{Im}
 F(x)=\int_0^T J_z(x,z_d,t)\thinspace dt.
 $$
 
-The code measures backward current and boundary probability before normalizing
-detector bins. It never silently clips a substantial negative flux.
+The detector differentiates in the same Fourier basis as the kinetic
+Hamiltonian. It integrates positive and negative currents separately over
+position and time. All time-integrated bins in the reference run are positive,
+although some instantaneous currents reverse sign. The screen histogram
+conditions on flux crossing the plane during $0\leq t\leq 7.2$.
 
 | 2D check | Result |
 | --- | ---: |
 | norm error | $2.5\times10^{-13}$ |
 | maximum boundary probability | $4.7\times10^{-6}$ |
-| detector backward-current fraction | $0$ within floating precision |
+| net flux through the detector | $0.25698$ |
+| backward flux / forward flux | $1.46\times10^{-7}$ |
 | finite-law versus 2D correlation | $0.984$ |
-| finite-law versus 2D total variation | $0.105$ |
+| finite-law versus 2D total variation | $0.103$ |
 
 The ideal paraxial central spacing is $2.666$ dimensionless units. The resolved
 central spacings are $2.50$ in the 2D run and $2.30$ in the finite transverse
 law. Finite slit width, barrier geometry, and grid resolution may each
-contribute; the full-shape correlation is the more informative cross-check.
+contribute. Halving the time step on the same spatial grid changes the
+normalized 2D histogram by 0.0066 in total variation. The comparison tests
+the shape conditional on transmission, with no independent calibration of
+source brightness or detection efficiency.
 
 ![Finite barrier and integrated-current screen](docs/figures/lattice2d.png)
 
@@ -631,7 +653,7 @@ framework.
 
 This repository adds a full finite unitary and all-column $\Gamma$, an explicit
 implementation of the entire process tuple, two positive path-space realizers,
-quantitative indivisibility diagnostics, a physical separation of local reset
+quantitative tests of cell-resolved division, a physical separation of local reset
 from global uncomputation and conditional erasure, and a 2D signed-current
 cross-check.
 
@@ -767,7 +789,7 @@ This README is the canonical reader-facing exposition. The documents under
 3. Jacob A. Barandes, [*New Prospects for a Causally Local Formulation of
    Quantum Theory*](https://arxiv.org/abs/2402.16935), arXiv:2402.16935v1.
 4. Jacob A. Barandes, [*Quantum Systems as Indivisible Stochastic
-   Processes*](https://arxiv.org/abs/2507.21192), arXiv:2507.21192v1.
+   Processes*](https://arxiv.org/abs/2507.21192v1), arXiv:2507.21192v1.
 5. Jacob A. Barandes, [*Double-Slit Interference for a Unistochastic
    Process*](https://shared.jacobbarandes.com/documents/double-slit-interference-unistochastic-lecture-notes),
    Lecture Notes #22.
@@ -782,8 +804,8 @@ Archived PDFs, versions, licenses, and SHA-256 checksums are listed in
 ## Citation, license, and responsibility
 
 `CITATION.cff` names Mike Famulare for citation of the software repository. The
-technical exposition in this README is authored by GPT-5.6 Sol (OpenAI Codex)
-as disclosed at the top of the document. OpenAI has not independently reviewed
+technical exposition in this README is credited to the Codex models
+identified at the top of the document. OpenAI has not independently reviewed
 or endorsed its scientific claims.
 
 Code is MIT licensed. Original prose and generated figures are CC BY 4.0.
@@ -819,7 +841,7 @@ stochastic process.
 
 This distinction is harmless if whole trajectories are representational
 surplus and only the equivalence class has physical meaning. It is more
-consequential when [the formulation](https://arxiv.org/abs/2507.21192) is
+consequential when [the formulation](https://arxiv.org/abs/2507.21192v1) is
 described as a system moving along a physical trajectory in configuration
 space. That language suggests an actual-trajectory ontology: each run has a
 history, and the stochastic dynamics should say how histories are distributed.

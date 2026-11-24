@@ -51,3 +51,14 @@ def test_relative_phase_changes_the_screen_law() -> None:
     assert not np.allclose(zero_phase, pi_phase)
     assert np.isclose(zero_phase.sum(), 1.0)
     assert np.isclose(pi_phase.sum(), 1.0)
+
+
+def test_nearly_coincident_source_and_target() -> None:
+    from non_markovian_double_slit.finite import unitary_mapping
+
+    a = np.array([1.0, 0.0])
+    for angle in (1e-7, 1e-5):
+        b = np.array([np.cos(angle), 1j * np.sin(angle)])
+        mapping = unitary_mapping(a, b)
+        np.testing.assert_allclose(mapping @ a, b, rtol=0, atol=1e-14)
+        assert unitarity_error(mapping) < 1e-14

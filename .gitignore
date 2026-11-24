@@ -16,3 +16,6 @@ docs/figures/generated/
 # Coverage
 .coverage
 htmlcov/
+
+# Local reading copy of the arXiv-hosted Bauer paper
+literature/bauer_2013_on_time_and_space_double_slit_experiments_1304.1767.pdf

@@ -94,6 +94,7 @@ class Lattice2DResult:
     potential: NDArray[np.float64]
     final_state: NDArray[np.complex128]
     integrated_current: NDArray[np.float64]
+    backward_flux: float
     initial_norm: float
     final_norm: float
     max_boundary_probability: float
@@ -105,16 +106,15 @@ class Lattice2DResult:
 
     def flux_diagnostics(self) -> FluxDiagnostics:
         dx = float(self.x[1] - self.x[0])
-        positive = float(np.maximum(self.integrated_current, 0).sum() * dx)
-        backward = max(0.0, float(-np.minimum(self.integrated_current, 0).sum() * dx))
-        net = positive - backward
-        fraction = backward / positive if positive > 0 else np.inf
+        net = float(self.integrated_current.sum() * dx)
+        positive = net + self.backward_flux
+        negative_bins = float(np.maximum(-self.integrated_current, 0).sum() * dx)
         return FluxDiagnostics(
             net_flux=net,
             positive_flux=positive,
-            backward_flux=backward,
-            backward_fraction=fraction,
-            negative_bin_mass=backward,
+            backward_flux=self.backward_flux,
+            backward_fraction=self.backward_flux / positive if positive > 0 else np.inf,
+            negative_bin_mass=negative_bins,
         )
 
     def screen_probability(
@@ -212,25 +212,29 @@ def run_lattice_simulation(config: Lattice2DConfig) -> Lattice2DResult:
 
     kx = 2 * np.pi * np.fft.fftfreq(config.nx, d=dx)
     kz = 2 * np.pi * np.fft.fftfreq(config.nz, d=dz)
-    kinetic_phase = np.exp(
-        -0.5j
-        * config.hbar
-        * (kz[:, None] ** 2 + kx[None, :] ** 2)
-        * config.dt
-        / config.mass
-    )
-    potential_half_phase = np.exp(-0.5j * potential * config.dt / config.hbar)
-    detector_index = int(np.argmin(np.abs(z - config.detector_z)))
-    if detector_index in (0, config.nz - 1):
-        raise ValueError("detector cannot be on a derivative boundary")
-
     steps = int(np.ceil(config.duration / config.dt))
-    snapshot_steps = {
-        max(1, round(fraction * steps)): fraction * config.duration
-        for fraction in (0.35, 0.55, 0.8, 1.0)
-    }
+    dt = config.duration / steps
+    kinetic_phase = np.exp(
+        -0.5j * config.hbar * (kz[:, None] ** 2 + kx[None, :] ** 2) * dt / config.mass
+    )
+    potential_half_phase = np.exp(-0.5j * potential * dt / config.hbar)
+    detector_index = int(np.argmin(np.abs(z - config.detector_z)))
+    # Row of F† diag(ik_z) F at the detector. A centered finite difference
+    # would measure sin(k_z dz)/dz for a plane wave of wave number k_z.
+    weights = np.roll(np.fft.fft(1j * kz) / config.nz, detector_index)
+
+    def detector_current() -> NDArray[np.float64]:
+        derivative = np.einsum("z,zx->x", weights, state)
+        return (config.hbar / config.mass) * np.imag(
+            state[detector_index].conj() * derivative
+        )
+
+    snapshot_steps = {max(1, round(f * steps)) for f in (0.35, 0.55, 0.8, 1.0)}
     snapshots: dict[float, NDArray[np.float64]] = {}
-    integrated_current = np.zeros(config.nx)
+    # Trapezoidal quadrature, splitting by sign before summing over time.
+    initial_current = detector_current()
+    integrated_current = 0.5 * dt * initial_current
+    backward_flux = 0.5 * dt * dx * np.maximum(-initial_current, 0).sum()
     max_boundary = _boundary_probability(state, dx, dz)
 
     for step in range(1, steps + 1):
@@ -239,16 +243,13 @@ def run_lattice_simulation(config: Lattice2DConfig) -> Lattice2DResult:
         state = np.fft.ifft2(momentum_state * kinetic_phase, norm="ortho")
         state *= potential_half_phase
 
-        derivative_z = (state[detector_index + 1] - state[detector_index - 1]) / (
-            2 * dz
-        )
-        current = (config.hbar / config.mass) * np.imag(
-            np.conj(state[detector_index]) * derivative_z
-        )
-        integrated_current += current * config.dt
+        current = detector_current()
+        weight = 0.5 * dt if step == steps else dt
+        integrated_current += weight * current
+        backward_flux += weight * dx * np.maximum(-current, 0).sum()
         max_boundary = max(max_boundary, _boundary_probability(state, dx, dz))
         if step in snapshot_steps:
-            snapshots[snapshot_steps[step]] = np.abs(state) ** 2
+            snapshots[step * dt] = np.abs(state) ** 2
 
     final_norm = _norm(state, dx, dz)
     return Lattice2DResult(
@@ -258,6 +259,7 @@ def run_lattice_simulation(config: Lattice2DConfig) -> Lattice2DResult:
         potential=potential,
         final_state=state,
         integrated_current=integrated_current,
+        backward_flux=float(backward_flux),
         initial_norm=initial_norm,
         final_norm=final_norm,
         max_boundary_probability=max_boundary,

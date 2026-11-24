@@ -142,7 +142,8 @@ $$
 Then $Pe_{j_s}=\psi_{q,\phi}$. It is unitary because, with
 $d=v^\dagger e_{j_s}$, one has $v^\dagger v=d+\bar d$, which makes
 $P^\dagger P=I$. If source and target already coincide, take $P=I$.
-This Householder-like completion is not unique. That nonuniqueness affects
+Near coincidence, the code uses two stable unitary maps via the negative of the
+source vector. The completion is not unique. That nonuniqueness affects
 unused columns of the chosen model, not the prepared source column. It is a
 declared model choice rather than a gauge equivalence: another unitary
 completion would define a different full $\Gamma$ for counterfactual initial
@@ -229,15 +230,16 @@ $$
   =|G(t)|^{\circ2}|P|^{\circ2}.
 $$
 
-Both matrices are nonnegative and column-stochastic. They describe different
-experimental conditions: the second inserts a division event at the slit and
-discards the cross terms. It is not inferred as a missing conditional law of
-the original process.
+The product describes an unread position measurement with single-cell
+resolution. It removes all off-diagonal entries of the aperture density
+matrix. A which-slit marker removes only the blocks coupling opposite slits.
+Failure of the displayed product by itself rules out only that candidate.
 
 The two-state Hadamard example makes the distinction exact. Starting in
 $e_1$, prepare with $H_2$ and propagate with $H_2$. The direct unitary is
 the identity, giving $p=(1,0)$, whereas the divided stochastic product gives
-$(1/2,1/2)$. The residual is $(1/2,-1/2)$.
+$(1/2,1/2)$. Both source columns agree at the halfway plane, yet the final
+identity matrix has distinct columns. No common stochastic factor exists.
 
 ![Direct and divided finite laws](figures/indivisibility.png)
 
@@ -288,10 +290,11 @@ $$
     [e^{i\phi}\overline{u_i}\ell_i\mu].
 $$
 
-- No record has $\mu=1$.
+- Identical marker states up to phase have $|\mu|=1$.
 - A perfect retained record has $\mu=0$, leaving the incoherent mixture.
 - Partial distinguishability has $0\lt|\mu|\lt1$. For pure record states,
-  $D=\sqrt{1-|\mu|^2}$.
+  $D=\sqrt{1-4q(1-q)|\mu|^2}$, with optimal record-based guessing
+  probability $(1+D)/2$ including the prior odds.
 
 A **local unitary** on the record cannot restore interference because it
 preserves $\langle r_U|r_L\rangle$. A physical local reset channel also does
@@ -321,8 +324,8 @@ p_\pm(i)=\frac12\left|
 \right|^2.
 $$
 
-The normalized conditional patterns are fringe and antifringe, while
-$p_++p_-=q|u|^2+(1-q)|\ell|^2$ remains decohered.
+The normalized conditional patterns are fringe and antifringe, with equal outcome weights. Their average is
+$p_++p_-=q|u|^2+(1-q)|\ell|^2$.
 
 ![Which-path overlap, reset, and uncomputation](figures/which_path.png)
 
@@ -434,20 +437,20 @@ $$
   F(x)=\int_0^{T}J_z(x,z_d,t)\thinspace dt.
 $$
 
-Before normalizing detector bins, the code reports and thresholds total
-backward current and boundary probability. Negative bins are never silently
-discarded. They may be zeroed only after their total negative mass passes the
-declared threshold.
+The code evaluates the spectral $z$ derivative at the detector and integrates
+with the trapezoid rule in time. It thresholds the ratio of the integral of
+$\max(-J_z,0)$ to the integral of $\max(J_z,0)$, and checks the probability in
+the outer boundary strip. A separate diagnostic sums negative final bins.
+Flux can reverse during the run even when this last diagnostic is zero.
 
 ![Finite barrier and integrated-current screen](figures/lattice2d.png)
 
 For the reference profile, the normalized 2D current is compared with the
 finite transverse law at paraxial flight time $t=L/v_z$. Their correlation is
-0.984 and total-variation distance is 0.105. The ideal paraxial center spacing
+0.984 and total-variation distance is 0.103. The ideal paraxial center spacing
 is 2.666 dimensionless units; the resolved central spacings are 2.50 in the 2D
 run and 2.30 in the finite transverse calculation. Finite slit width, barrier
-geometry, and grid resolution may each contribute; the full-shape correlation
-is the more informative cross-check.
+geometry, and grid resolution may each contribute; the shape comparison conditions on transmission through the detector plane.
 
 ![Finite transverse law versus 2D integrated current](figures/exact_vs_2d.png)
 
@@ -464,7 +467,7 @@ diagnostics were:
 | direct-versus-divided total variation | 0.700 |
 | 2D norm error | $2.5\times10^{-13}$ |
 | maximum 2D boundary probability | $4.7\times10^{-6}$ |
-| detector backward-current fraction | 0 within floating precision |
+| detector backward-current fraction | $1.46\times10^{-7}$ |
 | finite-versus-2D correlation | 0.984 |
 
 The checks cover the stated finite model and numerical cross-check. They do

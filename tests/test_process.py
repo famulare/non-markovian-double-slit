@@ -90,3 +90,21 @@ def test_process_enforces_composition_between_division_events() -> None:
             initial_time=0.0,
             initial_distribution=[1.0, 0.0],
         )
+
+
+def test_accepted_roundoff_makes_a_sampleable_law() -> None:
+    from dataclasses import replace
+
+    process = simple_process()
+    roundoff = np.array([[-5e-14, 1e-16], [1 + 5e-14, 1 - 1e-16]])
+    checked = replace(process, laws={**process.laws, (1.0, 0.0): roundoff})
+    assert checked.law(1.0)[0, 1] == 1e-16
+    p = checked.marginal(1.0, distribution=[1.0, 0.0])
+    assert p.min() >= 0
+    np.random.default_rng(1).choice(2, p=p)
+    with pytest.raises(ValueError, match="sum to one"):
+        replace(process, initial_distribution=[1.000003, 0])
+    with pytest.raises(ValueError, match="column-stochastic"):
+        replace(process, laws={**process.laws, (1.0, 0.0): 1.000003 * np.eye(2)})
+    with pytest.raises(ValueError, match="real"):
+        replace(process, initial_distribution=np.array([1 + 1j, 0]))

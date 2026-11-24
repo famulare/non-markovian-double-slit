@@ -54,3 +54,35 @@ def test_pure_record_visibility_distinguishability_relation() -> None:
     for overlap in (0.0, 0.25, 0.8, 1.0):
         distinguishability = path_distinguishability(overlap)
         assert np.isclose(distinguishability**2 + overlap**2, 1.0)
+
+
+def test_distinguishability_includes_unequal_prior_odds() -> None:
+    q = 0.8
+    for mu in (1.0, 0.0, 0.3j, -0.5):
+        upper = np.array([1, 0])
+        lower = np.array([mu, np.sqrt(1 - abs(mu) ** 2)])
+        difference = q * np.outer(upper, upper) - (1 - q) * np.outer(
+            lower, lower.conj()
+        )
+        assert np.isclose(
+            path_distinguishability(mu, upper_weight=q),
+            np.abs(np.linalg.eigvalsh(difference)).sum(),
+        )
+
+
+def test_complex_marker_overlap_matches_joint_born_probabilities() -> None:
+    upper, lower = amplitudes()
+    mu = 0.5j
+    q, phase = 0.7, 0.3
+    markers = np.array([[1, 0], [mu, np.sqrt(1 - abs(mu) ** 2)]])
+    branches = np.column_stack(
+        (np.sqrt(q) * upper, np.exp(1j * phase) * np.sqrt(1 - q) * lower)
+    )
+    joint = branches @ markers
+    np.testing.assert_allclose(
+        screen_pattern(
+            upper, lower, upper_weight=q, relative_phase=phase, record_overlap=mu
+        ),
+        (np.abs(joint) ** 2).sum(axis=1),
+        atol=1e-15,
+    )

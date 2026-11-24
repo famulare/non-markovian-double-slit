@@ -45,4 +45,4 @@ project's use of standard Hamiltonian methods to construct general
 stochastic laws. It does not require an autonomous derivation of the free
 Hamiltonian from positive probabilities.
 
-Source: [arXiv:2507.21192](https://arxiv.org/abs/2507.21192).
+Source: [arXiv:2507.21192](https://arxiv.org/abs/2507.21192v1).

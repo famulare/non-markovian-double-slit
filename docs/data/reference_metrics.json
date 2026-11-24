@@ -28,7 +28,7 @@
   },
   "path_realizers": {
     "independent_expected_squared_step": 263.26178316237406,
-    "transport_expected_squared_step": 35.765800765367196
+    "transport_expected_squared_step": 35.76580076536739
   },
   "lattice2d": {
     "shape": [
@@ -37,12 +37,13 @@
     ],
     "norm_error": 2.4802382370125997e-13,
     "max_boundary_probability": 4.696242803382323e-06,
-    "net_detector_flux": 0.21155684729216048,
-    "backward_flux_fraction": 0.0,
+    "net_detector_flux": 0.2569822517818097,
+    "backward_flux_fraction": 1.460183039842222e-07,
+    "negative_integrated_bin_mass": 0.0,
     "paraxial_expected_spacing": 2.6655937666822487,
     "observed_spacing": 2.5,
     "exact_finite_spacing": 2.3000000000000003,
-    "exact_2d_correlation": 0.9840729710126997,
-    "exact_2d_total_variation": 0.10476109858386493
+    "exact_2d_correlation": 0.9844682783437482,
+    "exact_2d_total_variation": 0.10317323656277944
   }
 }
