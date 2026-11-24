@@ -5,6 +5,8 @@
     "effective_separation_m": 7.649999999999999e-09,
     "expected_spacing_for_effective_separation_m": 0.01607843137254902,
     "observed_spacing_m": 0.015825,
+    "fraunhofer_peak_spacing_m": 0.015825,
+    "fraunhofer_max_density_error_over_peak": 3.1975199020190953e-07,
     "displayed_probability_mass": 0.94954041769122,
     "plot_coordinate_offset_m": 0.00015000000000000037
   },
@@ -14,6 +16,8 @@
     "effective_separation_m": 6.149999999999999e-09,
     "expected_spacing_for_effective_separation_m": 0.02,
     "observed_spacing_m": 0.019500000000000003,
+    "fraunhofer_peak_spacing_m": 0.019500000000000003,
+    "fraunhofer_max_density_error_over_peak": 3.3289566938160474e-07,
     "displayed_probability_mass": 0.9493327794623733,
     "plot_coordinate_offset_m": 0.00015000000000000037
   }

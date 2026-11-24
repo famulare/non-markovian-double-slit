@@ -407,6 +407,28 @@ $$
   \Delta x\simeq\frac{\lambda L}{d}=0.020\thinspace \mathrm m.
 $$
 
+Measure $x$ and the aperture coordinate $w$ from the midpoint of the two
+openings. Using $t=m\lambda L/h$ in the kernel, its phase is
+$\pi(x^2-2xw+w^2)/(\lambda L)$. The $x^2$ term is common to both
+amplitudes. Over the corrected apertures the $w^2$ term is at most
+$3.74\times10^{-7}$ radians. Dropping this term leaves the Fourier
+transform of the two boxes. With $\mathrm{sinc}(y)=\sin(\pi y)/(\pi y)$,
+the density per metre is
+
+$$
+I(x)=\frac{2a}{\lambda L}
+ \mathrm{sinc}^2\left(\frac{ax}{\lambda L}\right)
+ \cos^2\left(\frac{\pi d x}{\lambda L}\right).
+$$
+
+The prefactor comes from the unit-normalized aperture mode and the free
+kernel. No scale is fitted on the finite screen. Across its 2,000 bins
+the maximum difference from the corrected quadrature is less than
+$4\times10^{-7}$ of the peak density. In the same central window the peak
+finder returns 19.50 mm for both curves. The scale $\lambda L/d$ describes
+the oscillatory factor, while the maxima measured by the code belong to
+the product with the diffraction envelope.
+
 This supplies a physical-units check. It is not the finite stochastic tuple,
 because sampled continuum kernel values on unequal grids are not by themselves
 a verified finite unitary matrix. The finite cyclic construction instead

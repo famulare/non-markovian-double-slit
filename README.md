@@ -650,12 +650,16 @@ $$
 \Delta x\simeq\frac{\lambda L}{d}=0.020\thinspace \mathrm m.
 $$
 
-The corrected calculation resolves $0.01950\thinspace \mathrm m$. This continuum
-quadrature is a physical-units benchmark, not the finite stochastic tuple:
-sampled kernel values on unequal grids do not by themselves form a verified
-finite unitary matrix. Bauer's point-slit solution supplies the corresponding
-analytic phase and fringe displacement
-([Bauer, 2013](https://arxiv.org/abs/1304.1767), Eqs. 5-9).
+Why does the corrected simulation measure 19.50 mm when this formula says
+20.00 mm? For two uniform openings the far-field density is proportional
+to $\mathrm{sinc}^2(ax/(\lambda L))\cos^2(\pi d x/(\lambda L))$, with
+$\mathrm{sinc}(y)=\sin(\pi y)/(\pi y)$. The 20.00 mm is the period of the
+cosine squared. The single-slit envelope pulls the bright maxima of the
+product inward. Sampling this analytic curve on the same screen and using
+the same peak finder gives 19.50 mm, just as the full kernel quadrature
+does. The envelope and finite binning account for the shift at the reported
+resolution. This supplies a physical-units check independent of the finite
+periodic model. [Derivation and normalization](docs/derivation.md#7-continuum-electron-benchmark).
 
 ### 8.3 Two-dimensional finite-barrier benchmark
 

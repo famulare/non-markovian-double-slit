@@ -11,10 +11,12 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 
 from non_markovian_double_slit.diagnostics import central_fringe_spacing
 from non_markovian_double_slit.fresnel import (
     LeBlondResult,
+    fraunhofer_double_slit_density,
     leblond_reproduction,
     paraxial_fringe_spacing,
 )
@@ -31,12 +33,26 @@ def summarize(result: LeBlondResult) -> dict[str, float]:
         expected_spacing=expected,
         half_window=0.06,
     )
+    midpoint = (result.upper_points.mean() + result.lower_points.mean()) / 2
+    analytic = fraunhofer_double_slit_density(
+        result.screen - midpoint,
+        wavelength=1.23e-10,
+        distance=1.0,
+        slit_width=1.5e-9,
+        slit_separation=effective_separation,
+    )
     return {
         "lower_slit_center_m": float(result.lower_points.mean()),
         "upper_slit_center_m": float(result.upper_points.mean()),
         "effective_separation_m": effective_separation,
         "expected_spacing_for_effective_separation_m": expected,
         "observed_spacing_m": observed,
+        "fraunhofer_peak_spacing_m": central_fringe_spacing(
+            result.screen, analytic, expected_spacing=expected, half_window=0.06
+        ),
+        "fraunhofer_max_density_error_over_peak": float(
+            np.max(np.abs(analytic - result.coherent_density)) / analytic.max()
+        ),
         "displayed_probability_mass": result.displayed_mass,
         "plot_coordinate_offset_m": float(
             (result.plotted_screen - result.screen).mean()

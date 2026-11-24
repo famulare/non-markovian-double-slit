@@ -127,3 +127,25 @@ def paraxial_fringe_spacing(
     if min(wavelength, distance, slit_separation) <= 0:
         raise ValueError("all arguments must be positive")
     return wavelength * distance / slit_separation
+
+
+def fraunhofer_double_slit_density(
+    screen_from_midpoint: ArrayLike,
+    *,
+    wavelength: float,
+    distance: float,
+    slit_width: float,
+    slit_separation: float,
+) -> NDArray[np.float64]:
+    """Far-field density for two uniformly illuminated, in-phase box slits.
+
+    The total incident aperture mode has unit norm. Coordinates are measured
+    from the midpoint of the openings. np.sinc uses sin(pi u)/(pi u).
+    """
+    if min(wavelength, distance, slit_width) <= 0 or slit_separation < slit_width:
+        raise ValueError("require positive scales and nonoverlapping openings")
+    scale = wavelength * distance
+    frequency = np.asarray(screen_from_midpoint, dtype=float) / scale
+    envelope = np.sinc(slit_width * frequency) ** 2
+    fringes = np.cos(np.pi * slit_separation * frequency) ** 2
+    return (2 * slit_width / scale) * envelope * fringes
